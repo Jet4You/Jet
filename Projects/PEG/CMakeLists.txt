@@ -15,6 +15,7 @@ file(GLOB_RECURSE SOURCES
 )
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
+target_link_libraries(${PROJECT_NAME} PRIVATE RigCCore)
 
 if (MSVC)
 	target_compile_options(${PROJECT_NAME} PRIVATE "/utf-8")

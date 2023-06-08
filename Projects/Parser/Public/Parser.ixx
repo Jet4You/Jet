@@ -9,7 +9,9 @@ export import RigC.PEG;
 export namespace rigc::parser
 {
 
-auto parse(std::string_view module_content) -> int;
+using ParseResult = int;
+
+auto parse(std::string_view module_content) -> ParseResult;
 
 }
 
