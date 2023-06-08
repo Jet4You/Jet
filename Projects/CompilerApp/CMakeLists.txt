@@ -14,7 +14,7 @@ file(GLOB_RECURSE SOURCES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
-
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "rigcc")
 target_link_libraries(${PROJECT_NAME} PRIVATE RigCCompiler RigCParser RigCCore)
 
 if (MSVC)
