@@ -1,0 +1,11 @@
+[*.{c,cpp,h,hpp,ixx,cc,cxx,hh,hxx}]
+indent_size = 2
+indent_style = space
+charset = utf-8
+end_of_line = lf
+
+[CMakeLists.txt]
+indent_size = 2
+indent_style = space
+charset = utf-8
+end_of_line = lf

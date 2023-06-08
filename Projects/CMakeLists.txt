@@ -1,0 +1,3 @@
+add_subdirectory(PEG)
+add_subdirectory(Parser)
+add_subdirectory(CompilerApp)
