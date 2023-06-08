@@ -3,6 +3,8 @@
 #include <optional>
 #include <filesystem>
 
+import RigC.Compiler.Compile;
+
 import RigC.Parser;
 
 import RigC.Core.ProgramArgs;
@@ -10,20 +12,8 @@ import RigC.Core.File;
 import RigC.Core.Module;
 import RigC.Core.StdTypes;
 
-namespace rigc::compiler
-{
-
-auto compile(parser::ParseResult parse_result) -> int
-{
-  return 0;
-}
-
-} // namespace rigc::compiler
-
 auto main(int argc, char* argv[]) -> int
 {
-
-
   auto args = rigc::core::ProgramArgs(argc, argv);
 
   auto file_name = args.nth(1);
