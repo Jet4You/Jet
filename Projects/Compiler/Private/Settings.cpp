@@ -62,7 +62,7 @@ static auto parse_output_binary(ProgramArgs const& args, Settings& settings) -> 
   assert(args.is_index_valid(MODULE_NAME_IDX) && "Compiler was unintentionally allowed to run without any arguments.");
 
   auto fallback_name = args.get_unchecked(MODULE_NAME_IDX);
-  auto binary_name = args.sequence("-o").value_or(fallback_name);
+  auto binary_name   = args.sequence("-o").value_or(fallback_name);
 
   settings.output.binary_name = String(binary_name);
 }

@@ -43,8 +43,9 @@ static auto generate_llvm_ir(ParseResult const& parse_result, Settings const& se
 
 static auto determine_intermediate_directory(Settings const& settings) -> Path
 {
-  static auto constexpr DEFAULT_INTERMEDIATE_DIRECTORY = StringView( ".rigcc-intermediate" );
-  return Path( DEFAULT_INTERMEDIATE_DIRECTORY );
+  static auto constexpr DEFAULT_INTERMEDIATE_DIRECTORY = StringView(".rigcc-intermediate");
+  // TODO: make configurable.
+  return DEFAULT_INTERMEDIATE_DIRECTORY;
 }
 
 static auto ensure_intermediate_directory_exists(Settings const& settings) -> void
@@ -70,4 +71,4 @@ static auto cleanup_intermediate_directory(Settings const& settings) -> void
   fs::remove_all(path);
 }
 
-}
+} // namespace rigc::compiler
