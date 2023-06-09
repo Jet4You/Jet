@@ -49,6 +49,12 @@ auto Settings::should_output_binary() const -> bool
   return output.binary_name != std::nullopt;
 }
 
+auto Settings::should_cleanup_intermediate() const -> bool
+{
+  // TODO: make it configurable (e.g. for incremental building).
+  return true;
+}
+
 
 static auto parse_output_binary(ProgramArgs const& args, Settings& settings) -> void
 {
@@ -56,7 +62,7 @@ static auto parse_output_binary(ProgramArgs const& args, Settings& settings) -> 
   assert(args.is_index_valid(MODULE_NAME_IDX) && "Compiler was unintentionally allowed to run without any arguments.");
 
   auto fallback_name = args.get_unchecked(MODULE_NAME_IDX);
-  auto binary_name = args.sequence("-o").value_or(fallback_name);
+  auto binary_name   = args.sequence("-o").value_or(fallback_name);
 
   settings.output.binary_name = String(binary_name);
 }

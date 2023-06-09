@@ -50,7 +50,13 @@ auto main(int argc, char* argv[]) -> int
   auto parse_result = parse(*file_content);
 
   auto compile_settings = rigc::compiler::make_settings_from_args(args);
-  auto compiler_result = compile(parse_result, compile_settings);
+  auto compile_result = compile(parse_result, compile_settings);
 
-  return compiler_result;
+  if (auto err = compile_result.err()) {
+    std::cerr << "Compilation failed, details:\n" << err->details << '\n';
+    return 1;
+  }
+
+  std::cout << "Compilation successful.\n";
+  return 0;
 }
