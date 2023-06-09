@@ -37,7 +37,18 @@ auto compile(ParseResult parse_result, Settings settings) -> Result<int, Compile
 
 static auto generate_llvm_ir(ParseResult const& parse_result, Settings const& settings) -> Result<String, LLVMGenError>
 {
-  return error("not implemented");
+  // A sample program that prints "Hello, World from RigC".
+  static auto constexpr MOCK_IR_CONTENT =
+    "@.str = private unnamed_addr constant [23 x i8] c\"Hello, World from RigC\\00\"\n"
+    "\n"
+    "declare i32 @puts(i8* nocapture) nounwind\n"
+    "\n"
+    "define i32 @main() {\n"
+    "    %1 = call i32 @puts(i8* getelementptr inbounds ([20 x i8], [20 x i8]* @.str, i32 0, i32 0))\n"
+    "    ret i32 0\n"
+    "}";
+
+  return success(MOCK_IR_CONTENT);
 }
 
 
