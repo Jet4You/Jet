@@ -16,16 +16,16 @@ auto generate_llvm_ir(parser::ParseResult const& parse_result, Settings const& s
   return error("not implemented");
 }
 
-auto compile(parser::ParseResult parse_result, Settings settings) -> int
+auto compile(parser::ParseResult parse_result, Settings settings) -> Result<int, CompileError>
 {
   auto maybe_ir = generate_llvm_ir(parse_result, settings);
 
   if (auto err = maybe_ir.err()) {
     std::cerr << "Could not generate LLVM IR, details:\n    " << *err << '\n';
-    return 1;
+    return error("LLVM IR generation failed");
   }
 
-  return 0;
+  return success(0);
 }
 
 }

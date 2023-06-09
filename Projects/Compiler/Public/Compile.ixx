@@ -1,9 +1,10 @@
 module;
-
 export module RigC.Compiler.Compile;
 
 // Public imports:
 export import RigC.Parser;
+export import RigC.Core.Result;
+export import RigC.Core.StdTypes;
 
 // Private imports:
 import RigC.Compiler.Settings;
@@ -11,6 +12,11 @@ import RigC.Compiler.Settings;
 export namespace rigc::compiler
 {
 
-auto compile(parser::ParseResult parse_result, Settings settings) -> int;
+struct CompileError
+{
+  String details;
+};
+
+auto compile(parser::ParseResult parse_result, Settings settings) -> core::Result<int, CompileError>;
 
 }
