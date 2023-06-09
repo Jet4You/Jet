@@ -21,7 +21,7 @@ auto main(int argc, char* argv[]) -> int
 
   auto args = ProgramArgs(argc, argv);
 
-  auto file_name = args.nth(1);
+  auto file_name = args[1];
   if (!file_name) {
     std::cout << "Usage:";
     std::cout << "    rigcc [module-name]";

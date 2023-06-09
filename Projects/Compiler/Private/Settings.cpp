@@ -1,12 +1,14 @@
+#include <iostream>
 #include <optional>
+#include <cassert>
 
 import RigC.Compiler.Settings;
 
 namespace rigc::compiler
 {
 using core::ProgramArgs;
-static auto parse_output_binary(ProgramArgs const& args, Settings& settings) -> bool;
-static auto parse_output_llvm_ir(ProgramArgs const& args, Settings& settings) -> bool;
+static auto parse_output_binary(ProgramArgs const& args, Settings& settings) -> void;
+static auto parse_output_llvm_ir(ProgramArgs const& args, Settings& settings) -> void;
 
 auto make_settings_from_args(ProgramArgs const& args) -> Settings
 {
@@ -48,14 +50,24 @@ auto Settings::should_output_binary() const -> bool
 }
 
 
-static auto parse_output_binary(ProgramArgs const& args, Settings& settings) -> bool
+static auto parse_output_binary(ProgramArgs const& args, Settings& settings) -> void
 {
-  return true;
+  static auto constexpr MODULE_NAME_IDX = usize(1);
+  assert(args.is_index_valid(MODULE_NAME_IDX) && "Compiler was unintentionally allowed to run without any arguments.");
+
+  auto fallback_name = args.get_unchecked(MODULE_NAME_IDX);
+  auto binary_name = args.sequence("-o").value_or(fallback_name);
+
+  settings.output.binary_name = String(binary_name);
 }
 
-static auto parse_output_llvm_ir(ProgramArgs const& args, Settings& settings) -> bool
+static auto parse_output_llvm_ir(ProgramArgs const& args, Settings& settings) -> void
 {
-  return true;
+  auto ir_name = args.sequence("--llvm-ir");
+
+  if (ir_name) {
+    settings.output.llvm_ir_file_name = String(*ir_name);
+  }
 }
 
 } // namespace rigc::compiler
