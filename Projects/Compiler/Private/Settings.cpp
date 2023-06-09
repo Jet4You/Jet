@@ -49,6 +49,12 @@ auto Settings::should_output_binary() const -> bool
   return output.binary_name != std::nullopt;
 }
 
+auto Settings::should_cleanup_intermediate() const -> bool
+{
+  // TODO: make it configurable (e.g. for incremental building).
+  return true;
+}
+
 
 static auto parse_output_binary(ProgramArgs const& args, Settings& settings) -> void
 {

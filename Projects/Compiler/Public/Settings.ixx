@@ -22,6 +22,7 @@ struct Settings
 
   auto should_output_llvm_ir() const -> bool;
   auto should_output_binary() const -> bool;
+  auto should_cleanup_intermediate() const -> bool;
 };
 
 } // namespace rigc::compiler
