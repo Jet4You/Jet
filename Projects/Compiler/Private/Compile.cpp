@@ -17,7 +17,7 @@ static auto ensure_intermediate_directory_exists(Settings const& settings) -> vo
 static auto cleanup_intermediate_directory(Settings const& settings) -> void;
 static auto determine_intermediate_directory(Settings const& settings) -> Path;
 
-auto compile(parser::ParseResult parse_result, Settings settings) -> Result<int, CompileError>
+auto compile(ParseResult parse_result, Settings settings) -> Result<int, CompileError>
 {
   auto maybe_ir = generate_llvm_ir(parse_result, settings);
 
