@@ -1,7 +1,7 @@
-build/
-bin/
+/build
+/bin
 
-.idea/
-.vscode/
+/.idea
+/.vscode
 
-testbed/
+/testbed
