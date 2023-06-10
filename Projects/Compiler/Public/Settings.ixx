@@ -19,6 +19,7 @@ struct Settings
   };
 
   Output output;
+  bool cleanup_intermediate = true;
 
   auto should_output_llvm_ir() const -> bool;
   auto should_output_binary() const -> bool;
