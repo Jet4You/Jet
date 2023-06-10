@@ -36,6 +36,8 @@ auto make_settings_from_args(ProgramArgs const& args) -> Settings
   parse_output_binary(args, result);
   parse_output_llvm_ir(args, result);
 
+  result.cleanup_intermediate = !args.contains("--keep-intermediate");
+
   return result;
 }
 
@@ -51,8 +53,7 @@ auto Settings::should_output_binary() const -> bool
 
 auto Settings::should_cleanup_intermediate() const -> bool
 {
-  // TODO: make it configurable (e.g. for incremental building).
-  return true;
+  return cleanup_intermediate;
 }
 
 
