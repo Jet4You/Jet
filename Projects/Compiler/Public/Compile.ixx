@@ -19,4 +19,4 @@ struct CompileError
 
 auto compile(parser::ParseResult parse_result, Settings settings) -> core::Result<int, CompileError>;
 
-}
+} // namespace rigc::compiler

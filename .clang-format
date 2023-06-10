@@ -49,6 +49,7 @@ BreakConstructorInitializers: BeforeComma
 BreakBeforeBinaryOperators: None
 BreakInheritanceList: BeforeComma
 BreakStringLiterals: true
+BreakAfterAttributes: Always
 
 # Initializers & arguments
 BinPackArguments: false

@@ -3,6 +3,7 @@
 #include <cassert>
 
 import RigC.Compiler.Settings;
+import RigC.Core.StdTypes;
 
 namespace rigc::compiler
 {
@@ -31,7 +32,8 @@ auto make_settings_from_args(ProgramArgs const& args) -> Settings
   // a file of name "output_ir_name"
   // ---------------------
 
-  auto result = Settings();
+  auto result             = Settings();
+  result.root_module_name = String(args.get_unchecked(1));
 
   parse_output_binary(args, result);
   parse_output_llvm_ir(args, result);

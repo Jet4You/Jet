@@ -3,21 +3,16 @@
 #include <optional>
 #include <filesystem>
 
-import RigC.Compiler.Compile;
+import RigC.Compiler.BuildProcess;
 import RigC.Compiler.Settings;
 
-import RigC.Parser;
-
 import RigC.Core.ProgramArgs;
-import RigC.Core.File;
-import RigC.Core.Module;
 import RigC.Core.StdTypes;
 
 auto main(int argc, char* argv[]) -> int
 {
-  using rigc::core::ProgramArgs, rigc::core::read_file, rigc::core::find_module;
-  using rigc::parser::parse;
-  using rigc::compiler::compile;
+  using rigc::compiler::run_build;
+  using rigc::core::ProgramArgs;
 
   auto args = ProgramArgs(argc, argv);
 
@@ -28,35 +23,11 @@ auto main(int argc, char* argv[]) -> int
     return 0;
   }
 
-  auto module_path = find_module(Path(*file_name));
-
-  if (!module_path) {
-    std::cout << "Cannot find module: \"" << (*file_name) << "\"\n";
-    return 0;
-  }
-
-  auto file_content = read_file(*module_path);
-
-  if (!file_content) {
-    std::cout << "Cannot open file: \"" << (*file_name) << "\"\n";
-    return 0;
-  }
-
-  if (file_content->empty()) {
-    std::cout << "The module file is empty: \"" << (*file_name) << "\"\n";
-    return 0;
-  }
-
-  auto parse_result = parse(*file_content);
-
-  auto compile_settings = rigc::compiler::make_settings_from_args(args);
-  auto compile_result = compile(parse_result, compile_settings);
-
-  if (auto err = compile_result.err()) {
+  auto build_result = run_build(args);
+  if (auto err = build_result.err()) {
     std::cerr << "Compilation failed, details:\n" << err->details << '\n';
-    return 1;
+    return err->exit_code;
   }
 
   std::cout << "Compilation successful.\n";
-  return 0;
 }

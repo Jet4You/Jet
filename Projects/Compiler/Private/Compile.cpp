@@ -97,7 +97,10 @@ static auto run_llvm_compilation(Path const& directory) -> void
 
   auto cwd = fs::current_path();
   fs::current_path(directory);
+
+  // TODO: use proper process spawning and error handling.
   std::system("clang++ main.ll -o main.exe");
+
   fs::current_path(cwd);
 }
 
