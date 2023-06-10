@@ -27,4 +27,9 @@ auto read_file(Path const& file_path) -> Opt<String>
   return content;
 }
 
+auto overwrite_file(Path const& file_path, StringView content) -> void
+{
+  std::ofstream(file_path) << content;
+}
+
 }
