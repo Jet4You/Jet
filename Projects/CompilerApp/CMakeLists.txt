@@ -15,7 +15,13 @@ file(GLOB_RECURSE SOURCES
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "rigcc")
-target_link_libraries(${PROJECT_NAME} PRIVATE RigCCompiler RigCParser RigCCore)
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+  # RigC
+    RigCCompiler RigCParser RigCCore
+  # Third party
+    RigC_Comp_Format
+)
 
 if (MSVC)
   target_compile_options(${PROJECT_NAME} PRIVATE "/utf-8")
