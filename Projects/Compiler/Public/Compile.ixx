@@ -17,6 +17,6 @@ struct CompileError
   String details;
 };
 
-auto compile(parser::ParseResult parse_result, Settings settings) -> Result<int, CompileError>;
+auto compile(parser::ModuleParse parse_result, Settings settings) -> Result<int, CompileError>;
 
 } // namespace rigc::compiler
