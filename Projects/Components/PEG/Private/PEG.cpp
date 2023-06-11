@@ -1,9 +1,9 @@
 #include <string_view>
 #include <iostream>
 
-import RigC.PEG;
+import RigC.Comp.PEG;
 
-namespace rigc::peg
+namespace rigc::comp::peg
 {
 
 auto create_grammar(std::string_view content) -> Grammar {

@@ -4,7 +4,7 @@ module;
 
 export module RigC.Parser;
 
-export import RigC.PEG;
+export import RigC.Comp.PEG;
 
 export namespace rigc::parser
 {
