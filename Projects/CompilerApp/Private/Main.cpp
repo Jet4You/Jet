@@ -8,12 +8,13 @@ import RigC.Compiler.Settings;
 import RigC.Comp.Foundation;
 import RigC.Comp.Format;
 
-
 auto main(int argc, char* argv[]) -> int
 {
   using rigc::compiler::run_build;
   using namespace rigc::comp::foundation;
   namespace fmt = rigc::comp::fmt;
+
+  ensure_utf8_in_console();
 
   auto args = ProgramArgs(argc, argv);
 

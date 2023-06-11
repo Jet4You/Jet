@@ -59,7 +59,6 @@ auto begin_build(BuildState& state) -> BuildResult
 
   auto maybe_parsed = parse(*file_content);
   if (auto failed_parse = maybe_parsed.err()) {
-
     auto msg = fmt::format("module parse failed, details: {}", failed_parse->details);
     return error(BuildError{1, msg});
   }

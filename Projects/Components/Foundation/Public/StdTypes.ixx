@@ -4,6 +4,7 @@ module;
 #include <utility>
 #include <optional>
 #include <array>
+#include <vector>
 #include <string_view>
 #include <string>
 #include <filesystem>
@@ -34,6 +35,9 @@ using Opt = std::optional<T>;
 
 template <typename T, usize N>
 using Array = std::array<T, N>;
+
+template <typename T, typename TAlloc = std::allocator<T>>
+using DynArray = std::vector<T, TAlloc>;
 
 using StringView = std::string_view;
 using String     = std::string;
