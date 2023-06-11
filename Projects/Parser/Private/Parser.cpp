@@ -31,6 +31,7 @@ static auto traverse_file(ModuleParse& module_parse) -> void
 {
   auto& content = module_parse.content;
   auto& lines = module_parse.lines;
+  lines.content = content;
   lines.line_starts.reserve(1000);
   lines.push_line_start(0);
 

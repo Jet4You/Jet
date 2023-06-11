@@ -16,8 +16,13 @@ auto FileLines::line_at(usize byte_index) const -> usize
 
 auto FileLines::column_at(usize byte_index) const -> usize
 {
-  auto line_start = line_starts[line_at(byte_index)];
-  return byte_index - line_start; // TODO: make UTF-8 aware
+  auto col = usize(0);
+  auto curr = line_starts[line_at(byte_index)];
+  while (curr != byte_index) {
+    curr = next_utf8_pos(content, curr);
+    ++col;
+  }
+  return col;
 }
 
 auto FileLines::push_line_start(usize byte_index) -> void

@@ -7,6 +7,7 @@ export namespace rigc::parser
 {
 
 struct FileLines {
+  StringView content;
   DynArray<usize> line_starts;
   usize num_bytes = 0;
 
