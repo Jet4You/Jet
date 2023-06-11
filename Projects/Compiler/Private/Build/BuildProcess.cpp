@@ -7,12 +7,13 @@ import RigC.Compiler.Compile;
 import RigC.Parser;
 import RigC.Core.Module;
 import RigC.Core.File;
-import RigC.Core.StdTypes;
+
+import RigC.Comp.Foundation;
+using namespace rigc::comp::foundation;
+
 
 namespace rigc::compiler
 {
-using core::ProgramArgs, core::Result, core::error, core::success;
-
 auto run_build(ProgramArgs const& args) -> BuildResult
 {
   static auto constexpr NOT_READY_ERROR = StringView(

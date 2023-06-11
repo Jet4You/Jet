@@ -3,6 +3,8 @@
 
 import RigC.Core.Module;
 
+using namespace rigc::comp::foundation;
+
 namespace rigc::core
 {
 

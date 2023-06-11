@@ -5,15 +5,14 @@
 import RigC.Compiler.BuildProcess;
 import RigC.Compiler.Settings;
 
-import RigC.Core.ProgramArgs;
-import RigC.Core.StdTypes;
-
+import RigC.Comp.Foundation;
 import RigC.Comp.Format;
+
 
 auto main(int argc, char* argv[]) -> int
 {
   using rigc::compiler::run_build;
-  using rigc::core::ProgramArgs;
+  using namespace rigc::comp::foundation;
   namespace fmt = rigc::comp::fmt;
 
   auto args = ProgramArgs(argc, argv);

@@ -2,12 +2,16 @@
 #include <string_view>
 
 import RigC.Parser;
+import RigC.Comp.Foundation;
+using namespace rigc::comp::foundation;
 
 namespace rigc::parser
 {
 
-auto parse(std::string_view module_content) -> ParseResult
+auto parse(StringView module_content) -> ParseResult
 {
+  namespace peg = comp::peg;
+
   auto grammar = peg::create_grammar("hello world grammar");
   std::cout << "Parsing module content:\n" << module_content << '\n';
   return ParseResult();

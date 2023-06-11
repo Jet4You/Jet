@@ -8,9 +8,9 @@ module;
 #include <string>
 #include <filesystem>
 
-export module RigC.Core.StdTypes;
+export module RigC.Comp.Foundation.StdTypes;
 
-export
+export namespace rigc::comp::foundation
 {
 
 using usize = std::size_t;

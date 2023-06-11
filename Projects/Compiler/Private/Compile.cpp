@@ -5,13 +5,13 @@
 
 import RigC.Compiler.Compile;
 import RigC.Compiler.Settings;
-import RigC.Core.StdTypes;
-import RigC.Core.Result;
 import RigC.Core.File;
+
+import RigC.Comp.Foundation;
+using namespace rigc::comp::foundation;
 
 namespace rigc::compiler
 {
-using core::Result, core::success, core::error;
 using parser::ParseResult;
 using LLVMGenError = String;
 

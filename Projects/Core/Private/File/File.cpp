@@ -2,6 +2,7 @@
 #include <optional>
 
 import RigC.Core.File;
+using namespace rigc::comp::foundation;
 
 namespace rigc::core
 {
