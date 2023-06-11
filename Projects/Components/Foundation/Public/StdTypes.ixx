@@ -1,5 +1,6 @@
 module;
 
+#include <span>
 #include <cinttypes>
 #include <utility>
 #include <optional>
@@ -32,6 +33,9 @@ using f64 = double;
 
 template <typename T>
 using Opt = std::optional<T>;
+
+template <typename T>
+using Span = std::span<T, std::dynamic_extent>;
 
 template <typename T, usize N>
 using Array = std::array<T, N>;
