@@ -1,32 +1,31 @@
 # Projects
 
-This directory contains every piece of RigC-related code, excluding third-party projects.
+This directory contains all RigC-related code, excluding third-party projects.
 
 ### Overview
 
 The codebase is divided into two categories:
 
-- main projects (put inside this folder)
-- component libraries (inside the `Components` folder)
+- main projects (stored in this folder)
+- component libraries (stored in the `Components` folder)
 
 Every project that is directly related to the RigC language is a main project.
-The second group is a set of libraries that are used by the main projects. We are
-aware that as the language evolves, the number of sub-projects will increase significantly
+The second group consists of libraries that are used by the main projects. We are
+aware that as the language evolves, the number of sub-projects will increase significantly,
 so we decided to have the most important ones separated from the rest.
 
 #### Core vs Foundation
 
 It is important to clarify the difference between the `Core` and `Foundation`:
 
-The `Core` is a common library used by other main projects that provide **language-related** 
-functionality such as module system, type system, etc.
+The `Core` is a common library used by other main projects that provide language-related
+functionality (such as module system, type system, etc.).
 
 The `Foundation` is a component library with the most basic functionality that is used
 across the whole codebase, such as:
 
-- Standard library aliases (e.g. `u8`, `i32`, `usize`, `String`, `Opt`, etc.)
+- Standard library aliases (e.g., `u8`, `i32`, `usize`, `String`, `Opt`, etc.)
 - [`Result`](Components/Foundation/Public/Result.ixx) type
-
 
 ## Summary
 
