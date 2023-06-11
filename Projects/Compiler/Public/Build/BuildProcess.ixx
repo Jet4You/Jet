@@ -7,11 +7,8 @@ export module RigC.Compiler.BuildProcess;
 export import RigC.Compiler.BuildState;
 export import RigC.Compiler.Settings;
 
-export import RigC.Core.StdTypes;
-export import RigC.Core.ProgramArgs;
-export import RigC.Core.Result;
-
-using rigc::core::Result, rigc::core::ProgramArgs;
+export import RigC.Comp.Foundation;
+using namespace rigc::comp::foundation;
 
 export namespace rigc::compiler
 {

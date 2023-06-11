@@ -3,11 +3,11 @@ module;
 #include <cinttypes>
 #include <utility>
 
-export module RigC.Core.ProgramArgs;
+export module RigC.Comp.Foundation.ProgramArgs;
 
-export import RigC.Core.StdTypes;
+export import RigC.Comp.Foundation.StdTypes;
 
-export namespace rigc::core
+export namespace rigc::comp::foundation
 {
 
 /// Provides a convenient way to acce`ss and scan program arguments.
@@ -22,42 +22,53 @@ public:
   /// from the `main` function.
   ProgramArgs(int argc, char* argv[]);
 
+  // clang-format off
+
   /// Returns a program argument at a specified index.
   /// This function **is** bounds checked.
   /// @param idx index of the requested argument.
-  [[nodiscard]] auto operator[](usize idx) const -> Opt<StringView>;
+  [[nodiscard]]
+  auto operator[](usize idx) const -> Opt<StringView>;
+
+  // clang-format on
 
   /// Returns a program argument at a specified index.
   /// This function **is not** bounds checked. USE WITH CAUTION.
   /// @param idx index of the requested argument.
-  [[nodiscard]] auto get_unchecked(usize idx) const -> StringView;
+  [[nodiscard]]
+  auto get_unchecked(usize idx) const -> StringView;
 
   /// Scans arguments for a sequence of a given key and one argument
   /// after it (if available).
   /// @param key argument to search for
   /// @param offset where to begin search (default: 1 - after the 0th argument)
   /// @returns The argument after the key or nullopt if not found.
-  [[nodiscard]] auto sequence(StringView key, usize offset = 1) const -> Opt<StringView>;
+  [[nodiscard]]
+  auto sequence(StringView key, usize offset = 1) const -> Opt<StringView>;
 
   /// Searches arguments for a specified key starting with the given offset.
   /// @param key A value to search for.
   /// @param offset An index offset
   /// @returns An index of the key or nullopt if not found.
-  [[nodiscard]] auto index_of(StringView key, usize offset = 1) const -> Opt<usize>;
+  [[nodiscard]]
+  auto index_of(StringView key, usize offset = 1) const -> Opt<usize>;
 
   /// Searches arguments for a specified key starting with the given offset.
   /// @param key A value to search for.
   /// @returns True if the key was found, otherwise false.
-  [[nodiscard]] auto contains(StringView key) const -> bool;
+  [[nodiscard]]
+  auto contains(StringView key) const -> bool;
 
   /// @returns The number of arguments passed to the program.
-  [[nodiscard]] auto count() const -> int
+  [[nodiscard]]
+  auto count() const -> int
   {
     return _count;
   }
 
   /// @returns True of the specified index is valid (0 >= idx < count()).
-  [[nodiscard]] auto is_index_valid(usize idx) const -> bool
+  [[nodiscard]]
+  auto is_index_valid(usize idx) const -> bool
   {
     return idx < this->count();
   }
@@ -67,4 +78,4 @@ private:
   char** _values; ///< Values of arguments (`argv`).
 };
 
-} // namespace rigc::core
+} // namespace rigc::comp::foundation

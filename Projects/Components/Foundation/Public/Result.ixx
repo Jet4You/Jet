@@ -5,9 +5,9 @@ module;
 #include <tuple>
 #include <type_traits>
 
-export module RigC.Core.Result;
+export module RigC.Comp.Foundation.Result;
 
-namespace rigc::core
+namespace rigc::comp::foundation
 {
 
 template <typename T>
@@ -37,9 +37,9 @@ struct ErrorWrapper : ResultValueWrapperBase<T>
   using ResultValueWrapperBase<T>::ResultValueWrapperBase;
 };
 
-} // namespace rigc::core
+} // namespace rigc::core::foundation
 
-export namespace rigc::core
+export namespace rigc::comp::foundation
 {
 
 /// Encapsulates a result that can be either of the following:
@@ -178,4 +178,4 @@ auto error(T val) -> ErrorWrapper<T>
   return ErrorWrapper<T>(std::move(val));
 }
 
-} // namespace rigc::core
+} // namespace rigc::comp::foundation

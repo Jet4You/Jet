@@ -1,14 +1,14 @@
 export module RigC.Compiler.Settings;
 
-export import RigC.Core.StdTypes;
-export import RigC.Core.ProgramArgs;
+export import RigC.Comp.Foundation;
+using namespace rigc::comp::foundation;
 
 export namespace rigc::compiler
 {
 
 struct Settings;
 
-auto make_settings_from_args(core::ProgramArgs const& args) -> Settings;
+auto make_settings_from_args(ProgramArgs const& args) -> Settings;
 
 struct Settings
 {

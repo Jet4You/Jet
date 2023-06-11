@@ -1,6 +1,7 @@
 export module RigC.Core.File;
 
-export import RigC.Core.StdTypes;
+export import RigC.Comp.Foundation;
+using namespace rigc::comp::foundation;
 
 export namespace rigc::core
 {

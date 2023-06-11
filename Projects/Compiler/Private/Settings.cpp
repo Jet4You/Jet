@@ -3,11 +3,11 @@
 #include <cassert>
 
 import RigC.Compiler.Settings;
-import RigC.Core.StdTypes;
+import RigC.Comp.Foundation;
+using namespace rigc::comp::foundation;
 
 namespace rigc::compiler
 {
-using core::ProgramArgs;
 static auto parse_output_binary(ProgramArgs const& args, Settings& settings) -> void;
 static auto parse_output_llvm_ir(ProgramArgs const& args, Settings& settings) -> void;
 
