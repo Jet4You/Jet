@@ -1,0 +1,43 @@
+use std::rand::generate as gen;
+
+fn main
+{
+  let num = gen::<u32>(0, 100);
+  var retries_left = 5;
+  loop
+  {
+    let guess = ask_for_number(num);
+
+    if (guess == num) {
+      println("You guessed it!");
+      break;
+    }
+
+    if (retries_left == 0) {
+      println("You ran out of retries!");
+      break;
+    }
+
+    --retries_left;
+
+    if (guess < num) {
+      print("Too low!");
+    }
+    else {
+      print("Too high!");
+    }
+
+    println(" Try again ({} retries left)", retries_left);
+  }
+}
+
+fn ask_for_number(num: u32) -> i32 {
+  loop {
+    let maybe_num = prompt::<i32>("Guess a number in between [0, 100]");
+    if err (maybe_num.err()) {
+      println("Please enter a valid number!");
+      continue;
+    }   
+    ret maybe_num.ok();
+  }
+}
