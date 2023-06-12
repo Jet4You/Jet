@@ -14,8 +14,5 @@ The design docs are available [here](design/).
 
 ## Got any suggestion?
 
-If you have any suggestions, feel free to open an [issue](lnk-issues)
-or a [pull request](lnk-pr).
-
-[lnk-issues]: https://github.com/Jet4You/Jet/issues
-[lnk-pr]: https://github.com/Jet4You/Jet/pulls
+If you have any suggestions, feel free to open an [issue](https://github.com/Jet4You/Jet/issues)
+or a [pull request](https://github.com/Jet4You/Jet/pulls).
