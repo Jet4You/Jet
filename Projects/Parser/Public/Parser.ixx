@@ -16,7 +16,7 @@ struct FailedParse
 {
   ModuleParse content;
 
-  size_t pos;
+  usize pos;
   String details;
 };
 

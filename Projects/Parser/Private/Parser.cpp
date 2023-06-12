@@ -16,8 +16,8 @@ using comp::peg::Grammar, comp::peg::RuleRegistryView;
 static auto traverse_file(ModuleParse& module_parse) -> void;
 static auto dump_module(ModuleParse const& module_parse) -> void;
 
-static auto print_tabs(size_t count) -> void;
-static auto print_rule(Grammar const& g, RuleRegistryView current, size_t tabs = 0) -> void;
+static auto print_tabs(usize count) -> void;
+static auto print_rule(Grammar const& g, RuleRegistryView current, usize tabs = 0) -> void;
 static auto print_rules(Grammar const& g) -> void;
 static auto build_grammar() -> Grammar;
 
@@ -98,7 +98,7 @@ static auto print_rules(Grammar const& g) -> void
   print_rule(g, root_view);
 }
 
-static auto print_rule(Grammar const& g, RuleRegistryView current, size_t tabs) -> void
+static auto print_rule(Grammar const& g, RuleRegistryView current, usize tabs) -> void
 {
   using comp::peg::to_string;
   namespace fmt = comp::fmt;
@@ -148,10 +148,10 @@ static auto print_rule(Grammar const& g, RuleRegistryView current, size_t tabs) 
   }
 }
 
-static auto print_tabs(size_t count) -> void
+static auto print_tabs(usize count) -> void
 {
   namespace fmt = comp::fmt;
-  for (size_t i = 0; i < count; ++i) {
+  for (usize i = 0; i < count; ++i) {
     fmt::print("  ");
   }
 }
