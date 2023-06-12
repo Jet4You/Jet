@@ -22,6 +22,8 @@ Goals:
 - Simplicity is a priority
 - Possibility to run in a VM
 
+To read more about the language, see the [docs](docs/).
+
 ### Hello world code
 
 ```jet
