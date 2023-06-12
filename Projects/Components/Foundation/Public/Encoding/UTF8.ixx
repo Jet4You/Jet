@@ -2,12 +2,12 @@ module;
 
 #include <string_view>
 
-export module RigC.Comp.Foundation.UTF8;
+export module Jet.Comp.Foundation.UTF8;
 
-export import RigC.Comp.Foundation.StdTypes;
-export import RigC.Comp.Foundation.Result;
+export import Jet.Comp.Foundation.StdTypes;
+export import Jet.Comp.Foundation.Result;
 
-export namespace rigc::comp::foundation
+export namespace jet::comp::foundation
 {
 
 /// Ensures that the console is set to UTF-8 encoding.
@@ -139,4 +139,4 @@ auto utf8_chars(StringView text) -> UTF8Range
   return UTF8Range(text);
 }
 
-} // namespace rigc::comp::foundation
+} // namespace jet::comp::foundation

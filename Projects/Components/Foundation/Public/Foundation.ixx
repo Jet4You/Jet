@@ -1,10 +1,10 @@
-export module RigC.Comp.Foundation;
+export module Jet.Comp.Foundation;
 
-export import RigC.Comp.Foundation.StdTypes;
-export import RigC.Comp.Foundation.Result;
-export import RigC.Comp.Foundation.ProgramArgs;
-export import RigC.Comp.Foundation.UTF8;
+export import Jet.Comp.Foundation.StdTypes;
+export import Jet.Comp.Foundation.Result;
+export import Jet.Comp.Foundation.ProgramArgs;
+export import Jet.Comp.Foundation.UTF8;
 
-export namespace rigc::comp::foundation
+export namespace jet::comp::foundation
 {
 }

@@ -1,7 +1,7 @@
-export module RigC.Core;
+export module Jet.Core;
 
-export import RigC.Comp.Foundation;
+export import Jet.Comp.Foundation;
 
-export namespace rigc::core
+export namespace jet::core
 {
-} // namespace rigc::core
+} // namespace jet::core

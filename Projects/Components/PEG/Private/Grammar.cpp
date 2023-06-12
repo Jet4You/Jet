@@ -1,13 +1,13 @@
 #include <cassert>
 #include <utility>
 
-import RigC.Comp.PEG.Grammar;
-import RigC.Comp.Foundation;
-import RigC.Comp.Foundation.StdTypes;
+import Jet.Comp.PEG.Grammar;
+import Jet.Comp.Foundation;
+import Jet.Comp.Foundation.StdTypes;
 
-using namespace rigc::comp::foundation;
+using namespace jet::comp::foundation;
 
-namespace rigc::comp::peg
+namespace jet::comp::peg
 {
 
 auto StructuralView::get_name(StringView text_registry) const -> StringView
@@ -40,4 +40,4 @@ auto RuleRegistryView::next() const -> RuleRegistryView
   return this->offset(this->as_structural().width());
 }
 
-} // namespace rigc::comp::peg
+} // namespace jet::comp::peg

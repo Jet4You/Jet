@@ -1,14 +1,14 @@
 #include <iostream>
 #include <string_view>
 
-import RigC.Parser;
-import RigC.Parser.ModuleParse;
+import Jet.Parser;
+import Jet.Parser.ModuleParse;
 
-import RigC.Comp.Foundation;
-import RigC.Comp.Format;
-using namespace rigc::comp::foundation;
+import Jet.Comp.Foundation;
+import Jet.Comp.Format;
+using namespace jet::comp::foundation;
 
-namespace rigc::parser
+namespace jet::parser
 {
 
 using comp::peg::Grammar, comp::peg::RuleRegistryView;
@@ -156,4 +156,4 @@ static auto print_tabs(size_t count) -> void
   }
 }
 
-} // namespace rigc::parser
+} // namespace jet::parser

@@ -2,11 +2,11 @@ module;
 
 #include <string_view>
 
-export module RigC.Comp.PEG;
-export import RigC.Comp.PEG.Grammar;
-export import RigC.Comp.PEG.GrammarBuilder;
+export module Jet.Comp.PEG;
+export import Jet.Comp.PEG.Grammar;
+export import Jet.Comp.PEG.GrammarBuilder;
 
-export namespace rigc::comp::peg
+export namespace jet::comp::peg
 {
 
 }

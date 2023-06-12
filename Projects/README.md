@@ -1,6 +1,6 @@
 # Projects
 
-This directory contains all RigC-related code, excluding third-party projects.
+This directory contains all Jet-related code, excluding third-party projects.
 
 ### Overview
 
@@ -9,7 +9,7 @@ The codebase is divided into two categories:
 - main projects (stored in this folder)
 - component libraries (stored in the `Components` folder)
 
-Every project that is directly related to the RigC language is a main project.
+Every project that is directly related to the Jet language is a main project.
 The second group consists of libraries that are used by the main projects. We are
 aware that as the language evolves, the number of sub-projects will increase significantly,
 so we decided to have the most important ones separated from the rest.
@@ -42,12 +42,12 @@ Here is a list of all projects in the codebase:
     <tr><td colspan=3 align=center>Libraries</td></tr>
     <tr>
         <td><a href="Parser">Parser</a></td>
-        <td><code>rigc::parser::*</code></td>
+        <td><code>jet::parser::*</code></td>
         <td>Responsible for providing a grammar and generating AST.</td>
     </tr>
     <tr>
         <td><a href="Core">Core</a></td>
-        <td><code>rigc::core::*</code></td>
+        <td><code>jet::core::*</code></td>
         <td>
             Provides common, language-related functionality such as
             module system, type system, etc.
@@ -55,16 +55,16 @@ Here is a list of all projects in the codebase:
     </tr>
     <tr>
         <td><a href="Compiler">Compiler</a></td>
-        <td><code>rigc::compiler::*</code></td>
+        <td><code>jet::compiler::*</code></td>
         <td>The base library that is used by the CompilerApp (and possibly other projects in the future)</td>
     </tr>
     <tr>
         <td>VM <small>(TBD)</small></td>
-        <td><code>rigc::vm::*</code></td>
+        <td><code>jet::vm::*</code></td>
         <td>
             <b>(FUTURE PLAN)</b>
-            Implements an on-the-fly execution of the RigC code, improving compile-time
-            capabilities of the language and providing a way to run RigC code on any
+            Implements an on-the-fly execution of the Jet code, improving compile-time
+            capabilities of the language and providing a way to run Jet code on any
             platform.
         </td>
     </tr>
@@ -72,7 +72,7 @@ Here is a list of all projects in the codebase:
     <tr>
         <td><b><a href="CompilerApp">CompilerApp</a></b></td>
         <td><code>-</code></td>
-        <td>The app project that creates the <code>rigcc</code> executable.</td>
+        <td>The app project that creates the <code>jetc</code> executable.</td>
     </tr>
     <tr>
         <td>VMApp <small>(TBD)</small></td>
@@ -94,7 +94,7 @@ Here is a list of all projects in the codebase:
     </tr>
     <tr>
         <td><a href="Components/Foundation">Foundation</a></td>
-        <td><code>rigc::comp::foundation::*</code></td>
+        <td><code>jet::comp::foundation::*</code></td>
         <td>
             The most basic functionality that is used across the whole codebase, such as
             standard library aliases, <code>Result</code> type, etc.
@@ -102,14 +102,14 @@ Here is a list of all projects in the codebase:
     </tr>
     <tr>
         <td><a href="Components/PEG">PEG</a></td>
-        <td><code>rigc::comp::peg::*</code></td>
+        <td><code>jet::comp::peg::*</code></td>
         <td>
             A custom implementation of a PEG parser generator used by the Parser project.
         </td>
     </tr>
     <tr>
         <td><a href="Components/Format">Format</a></td>
-        <td><code>rigc::comp::fmt::*</code></td>
+        <td><code>jet::comp::fmt::*</code></td>
         <td>
             Formatting library that exposes <a href="https://github.com/fmtlib/fmt">fmtlib</a>
             content as a module.

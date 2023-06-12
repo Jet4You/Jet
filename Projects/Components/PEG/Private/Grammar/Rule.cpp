@@ -1,10 +1,10 @@
-import RigC.Comp.PEG.Rule;
+import Jet.Comp.PEG.Rule;
 
-import RigC.Comp.Foundation;
-import RigC.Comp.Foundation.StdTypes;
-using namespace rigc::comp::foundation;
+import Jet.Comp.Foundation;
+import Jet.Comp.Foundation.StdTypes;
+using namespace jet::comp::foundation;
 
-namespace rigc::comp::peg
+namespace jet::comp::peg
 {
 
 auto to_string(CombinatorRule rule) -> StringView

@@ -1,10 +1,10 @@
 #include <fstream>
 #include <optional>
 
-import RigC.Core.File;
-using namespace rigc::comp::foundation;
+import Jet.Core.File;
+using namespace jet::comp::foundation;
 
-namespace rigc::core
+namespace jet::core
 {
 
 auto read_file(Path const& file_path) -> Opt<String>

@@ -1,10 +1,10 @@
 module;
 
-export module RigC.Compiler.BuildState;
+export module Jet.Compiler.BuildState;
 
-export import RigC.Compiler.Settings;
+export import Jet.Compiler.Settings;
 
-export namespace rigc::compiler
+export namespace jet::compiler
 {
 
 /// Stores the state of the current build process.
@@ -19,4 +19,4 @@ struct BuildState
   auto can_start() const -> bool;
 };
 
-} // namespace rigc::compiler
+} // namespace jet::compiler

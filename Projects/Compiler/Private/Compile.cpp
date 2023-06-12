@@ -3,14 +3,14 @@
 #include <filesystem>
 #include <cstdlib>
 
-import RigC.Compiler.Compile;
-import RigC.Compiler.Settings;
-import RigC.Core.File;
+import Jet.Compiler.Compile;
+import Jet.Compiler.Settings;
+import Jet.Core.File;
 
-import RigC.Comp.Foundation;
-using namespace rigc::comp::foundation;
+import Jet.Comp.Foundation;
+using namespace jet::comp::foundation;
 
-namespace rigc::compiler
+namespace jet::compiler
 {
 using parser::ModuleParse;
 using LLVMGenError = String;
@@ -45,14 +45,14 @@ auto compile(ModuleParse parse_result, Settings settings) -> Result<int, Compile
 
 static auto generate_llvm_ir(ModuleParse const& parse_result, Settings const& settings) -> Result<String, LLVMGenError>
 {
-  // A sample program that prints "Hello, World from RigC".
+  // A sample program that prints "Hello, World from Jet".
   static auto constexpr MOCK_IR_CONTENT =
-    "@.str = private unnamed_addr constant [23 x i8] c\"Hello, World from RigC\\00\"\n"
+    "@.str = private unnamed_addr constant [22 x i8] c\"Hello, World from Jet\\00\"\n"
     "\n"
     "declare i32 @puts(i8* nocapture) nounwind\n"
     "\n"
     "define i32 @main() {\n"
-    "    %1 = call i32 @puts(i8* getelementptr inbounds ([23 x i8], [23 x i8]* @.str, i32 0, i32 0))\n"
+    "    %1 = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str, i32 0, i32 0))\n"
     "    ret i32 0\n"
     "}";
 
@@ -64,7 +64,7 @@ static auto generate_llvm_ir(ModuleParse const& parse_result, Settings const& se
 
 static auto determine_intermediate_directory(Settings const& settings) -> Path
 {
-  static auto constexpr DEFAULT_INTERMEDIATE_DIRECTORY = StringView(".rigcc-intermediate");
+  static auto constexpr DEFAULT_INTERMEDIATE_DIRECTORY = StringView(".jetc-intermediate");
   // TODO: make configurable.
   return DEFAULT_INTERMEDIATE_DIRECTORY;
 }
@@ -115,4 +115,4 @@ static auto generate_intermediate_content(Path const& dir_path, StringView conte
   run_llvm_compilation(dir_path);
 }
 
-} // namespace rigc::compiler
+} // namespace jet::compiler

@@ -2,17 +2,17 @@
 #include <optional>
 #include <filesystem>
 
-import RigC.Compiler.BuildProcess;
-import RigC.Compiler.Settings;
+import Jet.Compiler.BuildProcess;
+import Jet.Compiler.Settings;
 
-import RigC.Comp.Foundation;
-import RigC.Comp.Format;
+import Jet.Comp.Foundation;
+import Jet.Comp.Format;
 
 auto main(int argc, char* argv[]) -> int
 {
-  using rigc::compiler::run_build;
-  using namespace rigc::comp::foundation;
-  namespace fmt = rigc::comp::fmt;
+  using jet::compiler::run_build;
+  using namespace jet::comp::foundation;
+  namespace fmt = jet::comp::fmt;
 
   ensure_utf8_in_console();
 
@@ -21,7 +21,7 @@ auto main(int argc, char* argv[]) -> int
   auto file_name = args[1];
   if (!file_name) {
     fmt::print("Usage:");
-    fmt::println("    rigcc [module-name]");
+    fmt::println("    jetc [module-name]");
     return 0;
   }
 

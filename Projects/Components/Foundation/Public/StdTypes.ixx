@@ -10,9 +10,9 @@ module;
 #include <string>
 #include <filesystem>
 
-export module RigC.Comp.Foundation.StdTypes;
+export module Jet.Comp.Foundation.StdTypes;
 
-export namespace rigc::comp::foundation
+export namespace jet::comp::foundation
 {
 
 using usize = std::size_t;

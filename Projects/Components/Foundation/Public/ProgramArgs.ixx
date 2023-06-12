@@ -3,11 +3,11 @@ module;
 #include <cinttypes>
 #include <utility>
 
-export module RigC.Comp.Foundation.ProgramArgs;
+export module Jet.Comp.Foundation.ProgramArgs;
 
-export import RigC.Comp.Foundation.StdTypes;
+export import Jet.Comp.Foundation.StdTypes;
 
-export namespace rigc::comp::foundation
+export namespace jet::comp::foundation
 {
 
 /// Provides a convenient way to acce`ss and scan program arguments.
@@ -78,4 +78,4 @@ private:
   char** _values; ///< Values of arguments (`argv`).
 };
 
-} // namespace rigc::comp::foundation
+} // namespace jet::comp::foundation

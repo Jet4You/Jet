@@ -5,9 +5,9 @@ module;
 #include <tuple>
 #include <type_traits>
 
-export module RigC.Comp.Foundation.Result;
+export module Jet.Comp.Foundation.Result;
 
-namespace rigc::comp::foundation
+namespace jet::comp::foundation
 {
 
 template <typename T>
@@ -37,9 +37,9 @@ struct ErrorWrapper : ResultValueWrapperBase<T>
   using ResultValueWrapperBase<T>::ResultValueWrapperBase;
 };
 
-} // namespace rigc::core::foundation
+} // namespace jet::core::foundation
 
-export namespace rigc::comp::foundation
+export namespace jet::comp::foundation
 {
 
 /// Encapsulates a result that can be either of the following:
@@ -178,4 +178,4 @@ auto error(T val) -> ErrorWrapper<T>
   return ErrorWrapper<T>(std::move(val));
 }
 
-} // namespace rigc::comp::foundation
+} // namespace jet::comp::foundation
