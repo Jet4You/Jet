@@ -12,17 +12,17 @@ using namespace rigc::comp::foundation;
 
 namespace rigc::compiler
 {
-using parser::ParseResult;
+using parser::ModuleParse;
 using LLVMGenError = String;
 
-static auto generate_llvm_ir(ParseResult const& parse_result, Settings const& settings) -> Result<String, LLVMGenError>;
+static auto generate_llvm_ir(ModuleParse const& parse_result, Settings const& settings) -> Result<String, LLVMGenError>;
 static auto ensure_exists(Path const& directory_path) -> void;
 static auto cleanup_intermediate_directory(Settings const& settings) -> void;
 static auto determine_intermediate_directory(Settings const& settings) -> Path;
 static auto generate_intermediate_content(Path const& dir_path, StringView content) -> void;
 static auto run_llvm_compilation(Path const& directory) -> void;
 
-auto compile(ParseResult parse_result, Settings settings) -> Result<int, CompileError>
+auto compile(ModuleParse parse_result, Settings settings) -> Result<int, CompileError>
 {
   auto maybe_ir = generate_llvm_ir(parse_result, settings);
 
@@ -43,7 +43,7 @@ auto compile(ParseResult parse_result, Settings settings) -> Result<int, Compile
   return success(0);
 }
 
-static auto generate_llvm_ir(ParseResult const& parse_result, Settings const& settings) -> Result<String, LLVMGenError>
+static auto generate_llvm_ir(ModuleParse const& parse_result, Settings const& settings) -> Result<String, LLVMGenError>
 {
   // A sample program that prints "Hello, World from RigC".
   static auto constexpr MOCK_IR_CONTENT =

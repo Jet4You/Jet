@@ -9,8 +9,9 @@ import RigC.Core.Module;
 import RigC.Core.File;
 
 import RigC.Comp.Foundation;
-using namespace rigc::comp::foundation;
+import RigC.Comp.Format;
 
+using namespace rigc::comp::foundation;
 
 namespace rigc::compiler
 {
@@ -33,6 +34,7 @@ auto run_build(ProgramArgs const& args) -> BuildResult
 
 auto begin_build(BuildState& state) -> BuildResult
 {
+  namespace fmt = rigc::comp::fmt;
   using core::read_file, core::find_module;
   using parser::parse;
   using compiler::compile;
@@ -55,8 +57,12 @@ auto begin_build(BuildState& state) -> BuildResult
     return error(BuildError{1, "module file is empty"});
   }
 
-  auto parse_result   = parse(*file_content);
-  auto compile_result = compile(parse_result, state.settings);
+  auto maybe_parsed = parse(*file_content);
+  if (auto failed_parse = maybe_parsed.err()) {
+    auto msg = fmt::format("module parse failed, details: {}", failed_parse->details);
+    return error(BuildError{1, msg});
+  }
+  auto compile_result = compile(maybe_parsed.get_unchecked(), state.settings);
 
   if (auto err = compile_result.err()) {
     return error(BuildError{1, err->details});
