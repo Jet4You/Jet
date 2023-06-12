@@ -1,0 +1,23 @@
+fn main {
+  println("FIBONACCI SEQUENCE PRINTER");
+
+  let maybe_num = prompt::<u32>("Enter a number: ");
+  if err (maybe_num.err()) {
+    println("Couldn't read the number: {}", err as str);
+    ret;
+  }
+  
+  print_fib();
+}
+
+fn print_fib(up_to: u32) {
+  var a = 0;
+  var b = 1;
+  var c = 0;
+  while (c < up_to) {
+    print("{} ", c);
+    c = a + b;
+    a = b;
+    b = c;
+  }
+}

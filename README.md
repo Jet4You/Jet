@@ -1,4 +1,4 @@
-# Jet Lang
+# Jet Lang 🚀
 
 A prototype implementation of the Jet language.
 
@@ -7,6 +7,32 @@ A prototype implementation of the Jet language.
 
 The project works only on Windows at the moment, because I decided to play with
 C++20 modules and try to get the most out of it. We use CMake as our build tool.
+
+## What is Jet
+
+A C-like, general-purpose programming language that compiles to a native code.
+
+Goals:
+
+- Rust-like syntax
+- C++-like feature set (and more)
+- Optional garbage collection with no performance compromises
+- Extremely fast compile times based a modular design
+- Prototype fast, improve with no limits
+- Simplicity is a priority
+- Possibility to run in a VM
+
+To read more about the language, see the [docs](docs/).
+
+### Hello world code
+
+```jet
+fn main {
+  println("Hello, {} from Jet!", "World");
+}
+```
+
+See more examples [here](docs/examples/).
 
 ## Folder structure
 
@@ -21,7 +47,7 @@ Some of the main projects are:
   the other main projects.
 - [Parser](Projects/Parser) - provides the grammar and generates AST for the language.
   
-For a more detailed description of the projects, refer to the [Projects directory](Projects/README.md).
+For a more detailed description of the projects, refer to the [Projects directory](Projects/).
 
 ## Usage
 
@@ -51,3 +77,8 @@ called "main.exe". Run the program with:
 .\main.exe
 ```
 
+## License
+
+The project is licensed under the Apache 2.0 license. See the [LICENSE](LICENSE) file for details.
+
+Project created by [Paweł Syska](https://github.com/PoetaKodu).
