@@ -1,11 +1,11 @@
 #include <algorithm>
 
-import RigC.Parser.ModuleParse;
+import Jet.Parser.ModuleParse;
 
-import RigC.Comp.Foundation;
-using namespace rigc::comp::foundation;
+import Jet.Comp.Foundation;
+using namespace jet::comp::foundation;
 
-namespace rigc::parser
+namespace jet::parser
 {
 
 auto FileLines::line_at(usize byte_index) const -> usize

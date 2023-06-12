@@ -1,9 +1,9 @@
-export module RigC.Parser.ModuleParse;
+export module Jet.Parser.ModuleParse;
 
-export import RigC.Comp.Foundation;
-using namespace rigc::comp::foundation;
+export import Jet.Comp.Foundation;
+using namespace jet::comp::foundation;
 
-export namespace rigc::parser
+export namespace jet::parser
 {
 
 struct FileLines {
@@ -27,4 +27,4 @@ struct ModuleParse
   FileLines lines;
 };
 
-} // namespace rigc::parser
+} // namespace jet::parser

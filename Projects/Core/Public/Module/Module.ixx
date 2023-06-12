@@ -1,9 +1,9 @@
-export module RigC.Core.Module;
+export module Jet.Core.Module;
 
-export import RigC.Comp.Foundation;
-using namespace rigc::comp::foundation;
+export import Jet.Comp.Foundation;
+using namespace jet::comp::foundation;
 
-export namespace rigc::core
+export namespace jet::core
 {
 
 auto find_module(Path module_path) -> Opt<Path>;

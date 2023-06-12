@@ -1,11 +1,11 @@
 #include <utility>
 #include <cassert>
 
-import RigC.Comp.PEG.GrammarBuilder;
+import Jet.Comp.PEG.GrammarBuilder;
 
-using namespace rigc::comp::foundation;
+using namespace jet::comp::foundation;
 
-namespace rigc::comp::peg
+namespace jet::comp::peg
 {
 
 auto finalize_grammar(CustomRuleRef root_rule, GrammarBuilder&& builder) -> Grammar
@@ -125,4 +125,4 @@ auto GrammarBuilder::add_text(StringView text, StringView rule_name) -> CustomRu
   return rule_ref;
 }
 
-} // namespace rigc::comp::peg
+} // namespace jet::comp::peg

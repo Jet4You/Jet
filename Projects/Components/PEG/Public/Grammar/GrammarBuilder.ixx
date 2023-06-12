@@ -1,9 +1,9 @@
-export module RigC.Comp.PEG.GrammarBuilder;
+export module Jet.Comp.PEG.GrammarBuilder;
 
-export import RigC.Comp.PEG.Grammar;
-using namespace rigc::comp::foundation;
+export import Jet.Comp.PEG.Grammar;
+using namespace jet::comp::foundation;
 
-export namespace rigc::comp::peg
+export namespace jet::comp::peg
 {
 
 /// Constructs a grammar.

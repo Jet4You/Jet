@@ -1,10 +1,10 @@
-export module RigC.Comp.PEG.Rule;
+export module Jet.Comp.PEG.Rule;
 
-export import RigC.Comp.Foundation;
-export import RigC.Comp.Foundation.StdTypes;
-using namespace rigc::comp::foundation;
+export import Jet.Comp.Foundation;
+export import Jet.Comp.Foundation.StdTypes;
+using namespace jet::comp::foundation;
 
-export namespace rigc::comp::peg
+export namespace jet::comp::peg
 {
 
 enum class CombinatorRule : i32

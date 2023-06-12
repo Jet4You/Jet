@@ -3,9 +3,9 @@ module;
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 
-export module RigC.Comp.Format;
+export module Jet.Comp.Format;
 
-export namespace rigc::comp::fmt
+export namespace jet::comp::fmt
 {
 
 using ::fmt::format;

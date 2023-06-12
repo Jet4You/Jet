@@ -2,12 +2,12 @@
 #include <Windows.h>
 #endif
 
-import RigC.Comp.Foundation.UTF8;
+import Jet.Comp.Foundation.UTF8;
 
-import RigC.Comp.Foundation.StdTypes;
-import RigC.Comp.Foundation.Result;
+import Jet.Comp.Foundation.StdTypes;
+import Jet.Comp.Foundation.Result;
 
-namespace rigc::comp::foundation
+namespace jet::comp::foundation
 {
 static auto is_continuation_byte(char ch) -> bool;
 static auto encoded_char_len(char leading_byte) -> u8;
@@ -115,4 +115,4 @@ static auto decode_4(StringView text) -> Result<char32_t, UTF8DecodeError>
 }
 
 
-} // namespace rigc::comp::foundation
+} // namespace jet::comp::foundation

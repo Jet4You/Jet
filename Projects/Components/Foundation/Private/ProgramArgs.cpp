@@ -2,11 +2,11 @@
 #include <string_view>
 #include <cassert>
 
-import RigC.Comp.Foundation.ProgramArgs;
+import Jet.Comp.Foundation.ProgramArgs;
 
-import RigC.Comp.Foundation.StdTypes;
+import Jet.Comp.Foundation.StdTypes;
 
-namespace rigc::comp::foundation
+namespace jet::comp::foundation
 {
 
 ProgramArgs::ProgramArgs(int argc, char* argv[])
@@ -57,4 +57,4 @@ auto ProgramArgs::contains(StringView key) const -> bool
   return this->index_of(key).has_value();
 }
 
-} // namespace rigc::comp::foundation
+} // namespace jet::comp::foundation

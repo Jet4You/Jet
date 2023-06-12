@@ -2,15 +2,15 @@ module;
 
 #include <variant>
 
-export module RigC.Compiler.BuildProcess;
+export module Jet.Compiler.BuildProcess;
 
-export import RigC.Compiler.BuildState;
-export import RigC.Compiler.Settings;
+export import Jet.Compiler.BuildState;
+export import Jet.Compiler.Settings;
 
-export import RigC.Comp.Foundation;
-using namespace rigc::comp::foundation;
+export import Jet.Comp.Foundation;
+using namespace jet::comp::foundation;
 
-export namespace rigc::compiler
+export namespace jet::compiler
 {
 
 /// Describes what went wrong with a build process.
@@ -36,4 +36,4 @@ auto run_build(ProgramArgs const& args) -> BuildResult;
 [[nodiscard]]
 auto begin_build(BuildState& build_state) -> BuildResult;
 
-} // namespace rigc::compiler
+} // namespace jet::compiler

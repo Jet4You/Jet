@@ -2,11 +2,11 @@
 #include <optional>
 #include <cassert>
 
-import RigC.Compiler.Settings;
-import RigC.Comp.Foundation;
-using namespace rigc::comp::foundation;
+import Jet.Compiler.Settings;
+import Jet.Comp.Foundation;
+using namespace jet::comp::foundation;
 
-namespace rigc::compiler
+namespace jet::compiler
 {
 static auto parse_output_binary(ProgramArgs const& args, Settings& settings) -> void;
 static auto parse_output_llvm_ir(ProgramArgs const& args, Settings& settings) -> void;
@@ -17,14 +17,14 @@ auto make_settings_from_args(ProgramArgs const& args) -> Settings
   //
   // #1
   // ---------------------
-  // rigcc main -o output_binary_name
+  // jetc main -o output_binary_name
   //
   // Compiles module "main" and all of referenced submodules
   // and outputs a binary of name "output_binary_name[.exe]"
   // ---------------------
   // #2
   // ---------------------
-  // rigcc main -o output_binary_name --llvm-ir output_ir_name
+  // jetc main -o output_binary_name --llvm-ir output_ir_name
   //
   // Compiles module "main" and all of referenced submodules,
   // outputs a binary of name "output_binary_name[.exe]" and
@@ -79,4 +79,4 @@ static auto parse_output_llvm_ir(ProgramArgs const& args, Settings& settings) ->
   }
 }
 
-} // namespace rigc::compiler
+} // namespace jet::compiler

@@ -1,9 +1,9 @@
-export module RigC.Compiler.Settings;
+export module Jet.Compiler.Settings;
 
-export import RigC.Comp.Foundation;
-using namespace rigc::comp::foundation;
+export import Jet.Comp.Foundation;
+using namespace jet::comp::foundation;
 
-export namespace rigc::compiler
+export namespace jet::compiler
 {
 
 struct Settings;
@@ -29,4 +29,4 @@ struct Settings
   auto should_cleanup_intermediate() const -> bool;
 };
 
-} // namespace rigc::compiler
+} // namespace jet::compiler

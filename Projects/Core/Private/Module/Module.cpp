@@ -1,11 +1,11 @@
 #include <filesystem>
 #include <optional>
 
-import RigC.Core.Module;
+import Jet.Core.Module;
 
-using namespace rigc::comp::foundation;
+using namespace jet::comp::foundation;
 
-namespace rigc::core
+namespace jet::core
 {
 
 auto find_module(Path module_path) -> Opt<Path>
@@ -20,7 +20,7 @@ auto find_module(Path module_path) -> Opt<Path>
     return std::nullopt;
   }
 
-  module_path.replace_extension(".rigc");
+  module_path.replace_extension(".jt");
   // Try the modified path.
   return find_module(module_path);
 }

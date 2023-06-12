@@ -1,11 +1,11 @@
-export module RigC.Comp.PEG.Grammar;
+export module Jet.Comp.PEG.Grammar;
 
-export import RigC.Comp.PEG.Rule;
-export import RigC.Comp.Foundation;
-export import RigC.Comp.Foundation.StdTypes;
-using namespace rigc::comp::foundation;
+export import Jet.Comp.PEG.Rule;
+export import Jet.Comp.Foundation;
+export import Jet.Comp.Foundation.StdTypes;
+using namespace jet::comp::foundation;
 
-export namespace rigc::comp::peg
+export namespace jet::comp::peg
 {
 
 struct StructuralView
@@ -146,4 +146,4 @@ public:
 };
 
 
-} // namespace rigc::comp::peg
+} // namespace jet::comp::peg

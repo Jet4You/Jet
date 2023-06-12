@@ -2,18 +2,18 @@
 #include <variant>
 #include <cassert>
 
-import RigC.Compiler.BuildProcess;
-import RigC.Compiler.Compile;
-import RigC.Parser;
-import RigC.Core.Module;
-import RigC.Core.File;
+import Jet.Compiler.BuildProcess;
+import Jet.Compiler.Compile;
+import Jet.Parser;
+import Jet.Core.Module;
+import Jet.Core.File;
 
-import RigC.Comp.Foundation;
-import RigC.Comp.Format;
+import Jet.Comp.Foundation;
+import Jet.Comp.Format;
 
-using namespace rigc::comp::foundation;
+using namespace jet::comp::foundation;
 
-namespace rigc::compiler
+namespace jet::compiler
 {
 auto run_build(ProgramArgs const& args) -> BuildResult
 {
@@ -34,7 +34,7 @@ auto run_build(ProgramArgs const& args) -> BuildResult
 
 auto begin_build(BuildState& state) -> BuildResult
 {
-  namespace fmt = rigc::comp::fmt;
+  namespace fmt = jet::comp::fmt;
   using core::read_file, core::find_module;
   using parser::parse;
   using compiler::compile;
@@ -71,4 +71,4 @@ auto begin_build(BuildState& state) -> BuildResult
   return success(std::monostate{});
 }
 
-} // namespace rigc::compiler
+} // namespace jet::compiler

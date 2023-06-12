@@ -1,6 +1,6 @@
-import RigC.Compiler.BuildState;
+import Jet.Compiler.BuildState;
 
-namespace rigc::compiler
+namespace jet::compiler
 {
 
 auto BuildState::can_start() const -> bool
@@ -9,4 +9,4 @@ auto BuildState::can_start() const -> bool
   return true;
 }
 
-} // namespace rigc::compiler
+} // namespace jet::compiler

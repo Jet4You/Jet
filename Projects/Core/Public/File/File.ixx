@@ -1,9 +1,9 @@
-export module RigC.Core.File;
+export module Jet.Core.File;
 
-export import RigC.Comp.Foundation;
-using namespace rigc::comp::foundation;
+export import Jet.Comp.Foundation;
+using namespace jet::comp::foundation;
 
-export namespace rigc::core
+export namespace jet::core
 {
 
 auto read_file(Path const& file_path) -> Opt<String>;

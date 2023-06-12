@@ -1,15 +1,15 @@
 module;
-export module RigC.Compiler.Compile;
+export module Jet.Compiler.Compile;
 
 // Public imports:
-export import RigC.Parser;
-export import RigC.Comp.Foundation;
-using namespace rigc::comp::foundation;
+export import Jet.Parser;
+export import Jet.Comp.Foundation;
+using namespace jet::comp::foundation;
 
 // Private imports:
-import RigC.Compiler.Settings;
+import Jet.Compiler.Settings;
 
-export namespace rigc::compiler
+export namespace jet::compiler
 {
 
 struct CompileError
@@ -19,4 +19,4 @@ struct CompileError
 
 auto compile(parser::ModuleParse parse_result, Settings settings) -> Result<int, CompileError>;
 
-} // namespace rigc::compiler
+} // namespace jet::compiler

@@ -1,6 +1,6 @@
-import RigC.Comp.PEG;
+import Jet.Comp.PEG;
 
-namespace rigc::comp::peg
+namespace jet::comp::peg
 {
 
 }
