@@ -7,11 +7,10 @@ import Jet.Parser.ModuleParse;
 import Jet.Comp.Foundation;
 import Jet.Comp.Format;
 using namespace jet::comp::foundation;
+using namespace jet::comp::peg;
 
 namespace jet::parser
 {
-
-using comp::peg::Grammar, comp::peg::RuleRegistryView;
 
 static auto traverse_file(ModuleParse& module_parse) -> void;
 static auto dump_module(ModuleParse const& module_parse) -> void;
@@ -29,6 +28,14 @@ auto parse(StringView module_content) -> Result<ModuleParse, FailedParse>
   auto module_parse    = ModuleParse();
   module_parse.content = module_content;
   traverse_file(module_parse);
+
+  auto analysis_result = analyze(grammar, module_content);
+
+  if (auto failed_analysis = analysis_result.err()) {
+    // TODO: provide details about parsing failure
+    return error(FailedParse{module_parse, 0, "AST building failed."});
+  }
+
   dump_module(module_parse);
 
   return success(std::move(module_parse));
