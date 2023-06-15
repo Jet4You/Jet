@@ -135,26 +135,27 @@ struct AnalysisState
   }
 };
 
-struct AnalysisBaseResult
+struct ASTAnalysis
 {
   StringView document;
   AST ast;
 };
 
-struct CompletedAnalysis : AnalysisBaseResult
+struct CompletedASTAnalysis : ASTAnalysis
 {
 };
 
-struct FailedAnalysis : AnalysisBaseResult
+struct FailedASTAnalysis : ASTAnalysis
 {
+  // TODO: add failure info.
 };
 
-using AnalysisResult = Result<CompletedAnalysis, FailedAnalysis>;
+using ASTAnalysisResult = Result<CompletedASTAnalysis, FailedASTAnalysis>;
 
 /// Analyzes the given document using the given grammar.
 /// If the analysis fails you can still read the last state of it.
 /// @note The grammar must be finalized.
 [[nodiscard]]
-auto analyze(Grammar const& grammar, StringView document) -> AnalysisResult;
+auto analyze(Grammar const& grammar, StringView document) -> ASTAnalysisResult;
 
 } // namespace jet::comp::peg

@@ -93,7 +93,7 @@ auto AnalysisState::restore(RestorePoint point) -> void
   ast_builder.children_counter.resize(point.children_depth);
 }
 
-auto analyze(Grammar const& grammar, StringView document) -> AnalysisResult
+auto analyze(Grammar const& grammar, StringView document) -> ASTAnalysisResult
 {
   auto state    = AnalysisState();
   state.content = document;
@@ -102,10 +102,10 @@ auto analyze(Grammar const& grammar, StringView document) -> AnalysisResult
 
   auto match_result = try_match_rule_ref(context, grammar.root_rule);
   if (!match_result.success) {
-    return error(FailedAnalysis{document, std::move(state.ast_builder.ast)});
+    return error(FailedASTAnalysis{document, std::move(state.ast_builder.ast)});
   }
 
-  return success(CompletedAnalysis{document, std::move(state.ast_builder.ast)});
+  return success(CompletedASTAnalysis{document, std::move(state.ast_builder.ast)});
 }
 
 static auto try_match_rule(MatcherContext ctx, RuleRegistryView rule) -> RuleMatchResult

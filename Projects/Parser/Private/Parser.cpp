@@ -21,7 +21,7 @@ namespace jet::parser
 
 static auto traverse_file(ModuleParse& module_parse) -> void;
 static auto dump_module(ModuleParse const& module_parse) -> void;
-static auto dump_analysis(JetGrammar const& grammar, AnalysisBaseResult const& analysis) -> void;
+static auto dump_analysis(JetGrammar const& grammar, ASTAnalysis const& analysis) -> void;
 
 static auto print_tabs(usize count) -> void;
 static auto print_rule(Grammar const& g, RuleRegistryView current, usize tabs = 0) -> void;
@@ -160,7 +160,7 @@ static auto print_tabs(usize count) -> void
   }
 }
 
-static auto dump_parse_entry(JetGrammar const& grammar, AnalysisBaseResult const& analysis, AST::EntryID entry_id, usize tabs = 0)
+static auto dump_parse_entry(JetGrammar const& grammar, ASTAnalysis const& analysis, AST::EntryID entry_id, usize tabs = 0)
   -> void
 {
   namespace fmt = comp::fmt;
@@ -195,7 +195,7 @@ static auto dump_parse_entry(JetGrammar const& grammar, AnalysisBaseResult const
   }
 }
 
-static auto dump_analysis(JetGrammar const& grammar, AnalysisBaseResult const& analysis) -> void
+static auto dump_analysis(JetGrammar const& grammar, ASTAnalysis const& analysis) -> void
 {
   auto& ast = analysis.ast;
   for (auto e = AST::EntryID(0); e.id < ast.entries.size();) {
