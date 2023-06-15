@@ -1,6 +1,14 @@
 export module Jet.Comp.PEG.GrammarBuilder;
 
 export import Jet.Comp.PEG.Grammar;
+
+// redundant
+import Jet.Comp.PEG.Rule;
+
+import Jet.Comp.Foundation.StdTypes;
+import Jet.Comp.Foundation.Result;
+// ------
+
 using namespace jet::comp::foundation;
 
 export namespace jet::comp::peg
@@ -66,7 +74,7 @@ public:
   /// Every call to @c begin_rule() must be followed by a call to @c end_rule().
   /// Use @c view_at() to access the rule.
   [[nodiscard]]
-  auto begin_rule(CombinatorRule kind, StringView name = "") -> CustomRuleRef;
+  auto begin_rule(CombinatorRule kind, bool capture = false, StringView name = "") -> CustomRuleRef;
 
   /// Begins registration of a structural rule within the registry.
   /// The rule will be considered a child of the last rule that was
@@ -76,7 +84,7 @@ public:
   /// Every call to @c begin_rule() must be followed by a call to @c end_rule().
   /// Use @c view_at() to access the rule.
   [[nodiscard]]
-  auto begin_rule(StructuralRule kind, StringView name = "") -> CustomRuleRef;
+  auto begin_rule(StructureRule kind, bool capture = false, StringView name = "") -> CustomRuleRef;
 
   /// Ends registration of a rule within the registry.
   auto end_rule() -> void;

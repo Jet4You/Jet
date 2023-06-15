@@ -20,9 +20,9 @@ auto to_string(CombinatorRule rule) -> StringView
   return "<Unknown>";
 }
 
-auto to_string(StructuralRule rule) -> StringView
+auto to_string(StructureRule rule) -> StringView
 {
-  using R = StructuralRule;
+  using R = StructureRule;
   switch (rule) {
   case R::Text: return "Text";
   default: return "<unknown>";
@@ -39,7 +39,11 @@ auto to_string(BuiltinRule rule) -> StringView
   case R::AlphaU: return "<alpha_u>";
   case R::Digit: return "<digit>";
   case R::Alnum: return "<alnum>";
-  case R::WordChar: return "<word_char>";
+  case R::IdentChar: return "<ident_char>";
+  case R::IdentFirstChar: return "<ident_first_char>";
+  case R::Ident: return "<ident>";
+  case R::UntilEOL: return "<Until EOL>";
+  case R::UntilEOF: return "<Until EOF>";
   default: return "<unknown>";
   }
 }

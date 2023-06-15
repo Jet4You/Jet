@@ -17,7 +17,7 @@ Goals:
 - Rust-like syntax
 - C++-like feature set (and more)
 - Optional garbage collection with no performance compromises
-- Extremely fast compile times based a modular design
+- Extremely fast compile times based on a modular design
 - Prototype fast, improve with no limits
 - Simplicity is a priority
 - Possibility to run in a VM
