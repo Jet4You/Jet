@@ -163,7 +163,7 @@ static auto print_tabs(usize count) -> void
 static auto dump_parse_entry(JetGrammar const& grammar, AnalysisState const& analysis, size_t entry_id, usize tabs = 0) -> void
 {
   namespace fmt = comp::fmt;
-  auto& entry   = analysis.parse.entries[entry_id];
+  auto& entry   = analysis.ast.entries[entry_id];
 
   print_tabs(tabs);
   fmt::println("Rule: {}", entry.rule_id.offset);
@@ -184,19 +184,19 @@ static auto dump_parse_entry(JetGrammar const& grammar, AnalysisState const& ana
   auto current_entry_id = entry_id + 1;
   for (auto i = usize(0); i < entry.num_children; ++i) {
     dump_parse_entry(grammar, analysis, current_entry_id, tabs + 1);
-    auto& child_entry = analysis.parse.entries[current_entry_id];
+    auto& child_entry = analysis.ast.entries[current_entry_id];
     if (child_entry.num_children == 0) {
       current_entry_id += 1;
     }
     else {
-      current_entry_id = analysis.parse.entries[current_entry_id].next_id_same_nesting.id;
+      current_entry_id = analysis.ast.entries[current_entry_id].next_id_same_nesting.id;
     }
   }
 }
 
 static auto dump_analysis(JetGrammar const& grammar, AnalysisState const& analysis) -> void
 {
-  auto& parse_entries = analysis.parse.entries;
+  auto& parse_entries = analysis.ast.entries;
   for (auto entry_id = usize(0); entry_id < parse_entries.size();) {
     dump_parse_entry(grammar, analysis, entry_id);
     if (parse_entries[entry_id].num_children == 0) {

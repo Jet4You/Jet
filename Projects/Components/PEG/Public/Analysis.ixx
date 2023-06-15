@@ -80,8 +80,8 @@ struct AnalysisState
   /// The text that is being analyzed.
   StringView content;
 
-  /// Current state of a parse.
-  AST parse;
+  /// Current state of an AST being built.
+  AST ast;
 
   /// Returns a restore point at the current state.
   [[nodiscard]]
@@ -94,14 +94,14 @@ struct AnalysisState
   /// TODO: use UTF-8 aware consumption.
   auto consume(usize n) -> void
   {
-    parse.current_pos += n;
+    ast.current_pos += n;
   }
 
   /// Returns the current position in the input.
   [[nodiscard]]
   auto current_pos() const -> usize
   {
-    return parse.current_pos;
+    return ast.current_pos;
   }
 
   /// Returns a view of the remaining input.
