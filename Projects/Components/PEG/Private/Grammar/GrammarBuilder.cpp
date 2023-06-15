@@ -3,6 +3,13 @@
 
 import Jet.Comp.PEG.GrammarBuilder;
 
+// redundant:
+import Jet.Comp.Foundation;
+import Jet.Comp.Foundation.StdTypes;
+import Jet.Comp.Foundation.Result;
+import Jet.Comp.PEG.Rule;
+// ------
+
 using namespace jet::comp::foundation;
 
 namespace jet::comp::peg
@@ -40,18 +47,28 @@ auto GrammarBuilder::register_text(StringView text) -> RegisteredText
   return RegisteredText{offset, len};
 }
 
-auto GrammarBuilder::begin_rule(CombinatorRule rule, StringView name) -> CustomRuleRef
+auto GrammarBuilder::begin_rule(CombinatorRule rule, bool capture, StringView name) -> CustomRuleRef
 {
-  return this->begin_raw_rule(EncodedRule(usize(rule)), name);
+  auto kind = EncodedRule(usize(rule));
+  if (capture) {
+    kind = kind.make_captured();
+  }
+  return this->begin_raw_rule(kind, name);
 }
 
-auto GrammarBuilder::begin_rule(StructuralRule rule, StringView name) -> CustomRuleRef
+auto GrammarBuilder::begin_rule(StructureRule rule, bool capture, StringView name) -> CustomRuleRef
 {
-  return this->begin_raw_rule(EncodedRule(usize(rule)), name);
+  auto kind = EncodedRule(usize(rule));
+  if (capture) {
+    kind = kind.make_captured();
+  }
+  return this->begin_raw_rule(kind, name);
 }
 
 auto GrammarBuilder::begin_raw_rule(EncodedRule raw, StringView name) -> CustomRuleRef
 {
+  this->try_increase_children();
+
   auto& rules_data = grammar.rule_registry.data;
   auto& text_reg   = grammar.text_registry;
 
@@ -85,7 +102,9 @@ auto GrammarBuilder::end_rule() -> void
   auto& rules = grammar.rule_registry;
   auto& ended = pending_rules.back();
 
-  rules.data[ended.rule.offset + StructuralView::NUM_CHILDREN_OFFSET] = ended.num_children;
+  auto rule_view = Span<usize>(rules.data).subspan(ended.rule.offset);
+  rule_view[StructuralView::NUM_CHILDREN_OFFSET] = ended.num_children;
+  rule_view[StructuralView::NEXT_SIBLING_AT_OFFSET] = rules.data.size();
   pending_rules.pop_back();
 }
 
@@ -110,9 +129,7 @@ auto GrammarBuilder::add_rule_ref(BuiltinRule rule) -> CustomRuleRef
 
 auto GrammarBuilder::add_text(StringView text, StringView rule_name) -> CustomRuleRef
 {
-  this->try_increase_children();
-
-  auto rule_ref = this->begin_rule(StructuralRule::Text, rule_name);
+  auto rule_ref = this->begin_rule(StructureRule::Text, false, rule_name);
 
   // Add two "rule refs" that in fact refer to a text.
   {
