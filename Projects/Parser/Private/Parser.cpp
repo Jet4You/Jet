@@ -21,7 +21,7 @@ namespace jet::parser
 
 static auto traverse_file(ModuleParse& module_parse) -> void;
 static auto dump_module(ModuleParse const& module_parse) -> void;
-static auto dump_analysis(JetGrammar const& grammar, AnalysisState const& analysis) -> void;
+static auto dump_analysis(JetGrammar const& grammar, AnalysisBaseResult const& analysis) -> void;
 
 static auto print_tabs(usize count) -> void;
 static auto print_rule(Grammar const& g, RuleRegistryView current, usize tabs = 0) -> void;
@@ -41,12 +41,12 @@ auto parse(StringView module_content) -> Result<ModuleParse, FailedParse>
 
   if (auto failed_analysis = analysis_result.err()) {
     comp::fmt::println("Failed analysis state:");
-    dump_analysis(grammar, failed_analysis->state);
+    dump_analysis(grammar, *failed_analysis);
     // TODO: provide details about parsing failure
     return error(FailedParse{module_parse, 0, "AST building failed."});
   }
 
-  dump_analysis(grammar, analysis_result.get_unchecked().state);
+  dump_analysis(grammar, analysis_result.get_unchecked());
   dump_module(module_parse);
 
   return success(std::move(module_parse));
@@ -160,10 +160,11 @@ static auto print_tabs(usize count) -> void
   }
 }
 
-static auto dump_parse_entry(JetGrammar const& grammar, AnalysisState const& analysis, size_t entry_id, usize tabs = 0) -> void
+static auto dump_parse_entry(JetGrammar const& grammar, AnalysisBaseResult const& analysis, AST::EntryID entry_id, usize tabs = 0)
+  -> void
 {
   namespace fmt = comp::fmt;
-  auto& entry   = analysis.ast.entries[entry_id];
+  auto& entry   = analysis.ast.get_entry(entry_id);
 
   print_tabs(tabs);
   fmt::println("Rule: {}", entry.rule_id.offset);
@@ -171,7 +172,7 @@ static auto dump_parse_entry(JetGrammar const& grammar, AnalysisState const& ana
   fmt::println(" - range: [{}, {})", entry.start_pos, entry.end_pos);
   if (entry.rule_id == grammar.rules.name) {
     print_tabs(tabs);
-    fmt::println(" - content: \"{}\"", analysis.content.substr(entry.start_pos, entry.end_pos - entry.start_pos));
+    fmt::println(" - content: \"{}\"", analysis.document.substr(entry.start_pos, entry.end_pos - entry.start_pos));
   }
 
   if (entry.num_children == 0) {
@@ -181,29 +182,29 @@ static auto dump_parse_entry(JetGrammar const& grammar, AnalysisState const& ana
   print_tabs(tabs);
   fmt::println(" - children ({}): ", entry.num_children);
 
-  auto current_entry_id = entry_id + 1;
+  auto current_entry_id = AST::EntryID(entry_id.id + 1);
   for (auto i = usize(0); i < entry.num_children; ++i) {
     dump_parse_entry(grammar, analysis, current_entry_id, tabs + 1);
-    auto& child_entry = analysis.ast.entries[current_entry_id];
+    auto& child_entry = analysis.ast.get_entry(current_entry_id);
     if (child_entry.num_children == 0) {
-      current_entry_id += 1;
+      current_entry_id.id += 1;
     }
     else {
-      current_entry_id = analysis.ast.entries[current_entry_id].next_id_same_nesting.id;
+      current_entry_id = child_entry.next_id_same_nesting;
     }
   }
 }
 
-static auto dump_analysis(JetGrammar const& grammar, AnalysisState const& analysis) -> void
+static auto dump_analysis(JetGrammar const& grammar, AnalysisBaseResult const& analysis) -> void
 {
-  auto& parse_entries = analysis.ast.entries;
-  for (auto entry_id = usize(0); entry_id < parse_entries.size();) {
-    dump_parse_entry(grammar, analysis, entry_id);
-    if (parse_entries[entry_id].num_children == 0) {
-      entry_id += 1;
+  auto& ast = analysis.ast;
+  for (auto e = AST::EntryID(0); e.id < ast.entries.size();) {
+    dump_parse_entry(grammar, analysis, e);
+    if (ast.get_entry(e).num_children == 0) {
+      e.id += 1;
     }
     else {
-      entry_id = parse_entries[entry_id].next_id_same_nesting.id;
+      e = ast.get_entry(e).next_id_same_nesting;
     }
   }
 }
