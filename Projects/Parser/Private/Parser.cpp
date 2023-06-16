@@ -38,15 +38,19 @@ auto parse(StringView module_content) -> Result<ModuleParse, FailedParse>
 
   auto analysis_result = analyze(grammar.peg, module_content);
 
-
   if (auto failed_analysis = analysis_result.err()) {
     comp::fmt::println("Failed analysis state:");
     dump_analysis(grammar, *failed_analysis);
+
+    module_parse.ast = std::move(failed_analysis->ast);
     // TODO: provide details about parsing failure
     return error(FailedParse{module_parse, 0, "AST building failed."});
   }
 
-  dump_analysis(grammar, analysis_result.get_unchecked());
+  auto& analysis = analysis_result.get_unchecked();
+  dump_analysis(grammar, analysis);
+
+  module_parse.ast = std::move(analysis.ast);
   dump_module(module_parse);
 
   return success(std::move(module_parse));
