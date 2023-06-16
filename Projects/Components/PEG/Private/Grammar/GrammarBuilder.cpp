@@ -134,8 +134,8 @@ auto GrammarBuilder::add_text(StringView text, StringView rule_name) -> CustomRu
   // Add two "rule refs" that in fact refer to a text.
   {
     auto text_reg = this->register_text(text);
-    this->push_custom_child(text_reg.offset);
-    this->push_custom_child(text_reg.len);
+    (void)this->push_custom_child(text_reg.offset);
+    (void)this->push_custom_child(text_reg.len);
   }
 
   this->end_rule();
