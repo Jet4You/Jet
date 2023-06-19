@@ -43,62 +43,57 @@ static auto try_match_combinator_star(MatcherContext ctx, StructuralView rule) -
 static auto try_match_combinator_opt(MatcherContext ctx, StructuralView rule) -> RuleMatchResult;
 
 
-auto AST::begin_entry(CustomRuleRef rule_id, usize start_pos) -> EntryID
+auto ASTBuilder::begin_entry(CustomRuleRef rule_id, usize start_pos) -> EntryID
 {
   if (!children_counter.empty()) {
     children_counter.back()++;
   }
 
-  auto entry = entries.size();
-  entries.push_back({
+  auto entry = ast.entries.size();
+  ast.entries.push_back({
     rule_id,
   });
-  entries.back().start_pos = start_pos;
+  ast.entries.back().start_pos = start_pos;
   children_counter.push_back(0);
 
   return {entry};
 }
 
-auto AST::finalize_entry(EntryID entry_id) -> void
+auto ASTBuilder::finalize_entry(EntryID entry_id) -> void
 {
-  auto& entry                = get_entry(entry_id);
-  entry.next_id_same_nesting = EntryID(entries.size());
+  auto& entry                = ast.get_entry(entry_id);
+  entry.next_id_same_nesting = EntryID(ast.entries.size());
   entry.num_children         = children_counter.back();
-  entry.end_pos              = current_pos;
+  entry.end_pos              = ast.current_pos;
   children_counter.pop_back();
 }
 
-auto AST::fail_current_entry() -> void
+auto ASTBuilder::fail_current_entry() -> void
 {
-  entries.pop_back();
+  ast.entries.pop_back();
   children_counter.pop_back();
   if (!children_counter.empty() && children_counter.back() > 0) {
     children_counter.back()--;
   }
 }
 
-auto AST::get_entry(EntryID entry_id) -> Entry&
-{
-  return entries[entry_id.id];
-}
-
 auto AnalysisState::create_restore_point() const -> RestorePoint
 {
   return {
-    ast.current_pos,
-    ast.entries.size(),
-    ast.children_counter.size(),
+    ast_builder.ast.current_pos,
+    ast_builder.ast.entries.size(),
+    ast_builder.children_counter.size(),
   };
 }
 
 auto AnalysisState::restore(RestorePoint point) -> void
 {
-  ast.current_pos = point.pos;
-  ast.entries.resize(point.num_entries);
-  ast.children_counter.resize(point.children_depth);
+  ast_builder.ast.current_pos = point.pos;
+  ast_builder.ast.entries.resize(point.num_entries);
+  ast_builder.children_counter.resize(point.children_depth);
 }
 
-auto analyze(Grammar const& grammar, StringView document) -> AnalysisResult
+auto analyze(Grammar const& grammar, StringView document) -> ASTAnalysisResult
 {
   auto state    = AnalysisState();
   state.content = document;
@@ -107,10 +102,10 @@ auto analyze(Grammar const& grammar, StringView document) -> AnalysisResult
 
   auto match_result = try_match_rule_ref(context, grammar.root_rule);
   if (!match_result.success) {
-    return error(FailedAnalysis{std::move(state)});
+    return error(FailedASTAnalysis{document, std::move(state.ast_builder.ast)});
   }
 
-  return success(CompletedAnalysis{std::move(state)});
+  return success(CompletedASTAnalysis{document, std::move(state.ast_builder.ast)});
 }
 
 static auto try_match_rule(MatcherContext ctx, RuleRegistryView rule) -> RuleMatchResult
@@ -262,7 +257,7 @@ static auto try_match_combinator_sor(MatcherContext ctx, StructuralView rule) ->
   auto should_capture = rule.kind().is_captured();
   auto entry          = AST::EntryID();
   if (should_capture) {
-    entry = ctx.state.ast.begin_entry(rule.get_ref(), ctx.state.current_pos());
+    entry = ctx.state.ast_builder.begin_entry(rule.get_ref(), ctx.state.current_pos());
   }
 
   auto child = rule.first_child();
@@ -271,7 +266,7 @@ static auto try_match_combinator_sor(MatcherContext ctx, StructuralView rule) ->
     if (match_result.success) {
       // Some rule succeeded, do not restore.
       if (should_capture) {
-        ctx.state.ast.finalize_entry(entry);
+        ctx.state.ast_builder.finalize_entry(entry);
       }
 
       return match_result;
@@ -281,7 +276,7 @@ static auto try_match_combinator_sor(MatcherContext ctx, StructuralView rule) ->
   }
 
   if (should_capture) {
-    ctx.state.ast.fail_current_entry();
+    ctx.state.ast_builder.fail_current_entry();
   }
   ctx.state.restore(restore_point);
   return {false};
@@ -294,7 +289,7 @@ static auto try_match_combinator_seq(MatcherContext ctx, StructuralView rule) ->
   auto should_capture = rule.kind().is_captured();
   auto entry          = AST::EntryID();
   if (should_capture) {
-    entry = ctx.state.ast.begin_entry(rule.get_ref(), ctx.state.current_pos());
+    entry = ctx.state.ast_builder.begin_entry(rule.get_ref(), ctx.state.current_pos());
   }
 
   auto child = rule.first_child();
@@ -302,7 +297,7 @@ static auto try_match_combinator_seq(MatcherContext ctx, StructuralView rule) ->
     auto match_result = try_match_rule(ctx, child);
     if (!match_result.success) {
       if (should_capture) {
-        ctx.state.ast.fail_current_entry();
+        ctx.state.ast_builder.fail_current_entry();
       }
       ctx.state.restore(restore_point);
       return {false};
@@ -312,7 +307,7 @@ static auto try_match_combinator_seq(MatcherContext ctx, StructuralView rule) ->
   }
 
   if (should_capture) {
-    ctx.state.ast.finalize_entry(entry);
+    ctx.state.ast_builder.finalize_entry(entry);
   }
 
   // Every subrule succeeded.
@@ -327,7 +322,7 @@ static auto try_match_combinator_repeat(MatcherContext ctx, StructuralView rule,
   auto should_capture = rule.kind().is_captured();
   auto entry          = AST::EntryID();
   if (should_capture) {
-    entry = ctx.state.ast.begin_entry(rule.get_ref(), ctx.state.current_pos());
+    entry = ctx.state.ast_builder.begin_entry(rule.get_ref(), ctx.state.current_pos());
   }
 
   auto num_matches = usize(0);
@@ -353,14 +348,14 @@ static auto try_match_combinator_repeat(MatcherContext ctx, StructuralView rule,
 
   if (num_matches < min_num) {
     if (should_capture) {
-      ctx.state.ast.fail_current_entry();
+      ctx.state.ast_builder.fail_current_entry();
     }
     ctx.state.restore(restore_point);
     return {false};
   }
 
   if (should_capture) {
-    ctx.state.ast.finalize_entry(entry);
+    ctx.state.ast_builder.finalize_entry(entry);
   }
 
   return {true};

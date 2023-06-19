@@ -1,6 +1,7 @@
 export module Jet.Parser.JetGrammar;
 
 import Jet.Comp.PEG.Grammar;
+import Jet.Comp.PEG.GrammarBuilder;
 import Jet.Comp.PEG.Rule;
 
 import Jet.Comp.Foundation;
@@ -15,41 +16,47 @@ struct JetGrammar;
 
 auto build_grammar() -> JetGrammar;
 
+enum class JetGrammarRuleType
+{
+  Expression,
+  Statement,
+
+  // Root:
+  ModuleStmt,
+
+  // Base pieces
+  Ws, // Whitespace(s) / comments
+  OptWs, // Optional `ws`
+
+  // Keywords
+
+  // # Variable-related
+  KwVar,
+  KwLet,
+
+  // # Function-related
+  KwFn,
+  KwRet,
+
+  // Identifiers
+  Name,
+
+  // Declarations
+  DeclVariable,
+  DeclFunction,
+
+  // Blocks
+  CodeBlock,
+
+  MAX
+};
+
+using JetGrammarCapturesBuilder = GrammarCaptureListBuilder<JetGrammarRuleType>;
+using JetGrammarRules = GrammarCaptureList<JetGrammarRuleType>;
+
 struct JetGrammar
 {
-  struct Rules
-  {
-    using Ref = CustomRuleRef;
-
-    // Root:
-    Ref module_stmt;
-
-    // Atomic pieces
-    Ref ws; // Whitespace(s) / comments
-    Ref opt_ws; // Optional `ws`
-
-    // Keywords
-
-    // # Variable-related
-    Ref kw_var;
-    Ref kw_let;
-
-    // # Function-related
-    Ref kw_fn;
-    Ref kw_ret;
-
-    // Identifiers
-    Ref name;
-
-    // Declarations
-    Ref decl_variable;
-    Ref decl_function;
-
-    // Blocks
-    Ref code_block;
-  };
-
-  Rules   rules;
+  JetGrammarRules rules;
   Grammar peg;
 };
 

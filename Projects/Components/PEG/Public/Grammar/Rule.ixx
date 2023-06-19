@@ -132,13 +132,22 @@ struct CustomRuleRef final
   auto operator==(CustomRuleRef const& other) const -> bool = default;
 };
 
+/// Placeholder id
+struct PlaceholderRuleRef final
+{
+  /// An arbitrary, unique ID of the placeholder
+  usize id = 0;
+
+  auto operator==(PlaceholderRuleRef const& other) const -> bool = default;
+};
+
 /// An encoded kind of a rule.
 /// For structural and builtin rules, the value is the kind of the rule.
 /// For custom rules the value is the offset within the RuleRegistry.
 struct EncodedRule final
 {
   // The top-most bit is reserved for the capture flag.
-  inline static auto constexpr CAPTURE_FLAG = usize(1) << sizeof(usize) * (8 - 1);
+  inline static auto constexpr CAPTURE_FLAG = usize(1) << (sizeof(usize) * 8 - 1);
 
   /// Encoded value.
   usize value = 0;
@@ -215,7 +224,7 @@ struct EncodedRule final
 
   /// @returns A copy of the instance with the capture flag set.
   [[nodiscard]]
-  auto make_captured() -> EncodedRule
+  auto make_captured() const -> EncodedRule
   {
     return EncodedRule{value | CAPTURE_FLAG};
   }
@@ -224,7 +233,7 @@ struct EncodedRule final
   [[nodiscard]]
   auto drop_flags() const -> usize
   {
-    return value & ~CAPTURE_FLAG;
+    return value & ~(CAPTURE_FLAG);
   }
 
 private:

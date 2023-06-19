@@ -16,9 +16,11 @@ using namespace jet::comp::foundation;
 export namespace jet::comp::peg
 {
 
+/// Represents an Abstract Syntax Tree.
 /// Contains the result of a syntactic analysis of a text input.
 struct AST
 {
+  /// Type-safe handle to an entry in the AST.
   struct EntryID
   {
     usize id;
@@ -43,6 +45,37 @@ struct AST
     usize end_pos = 0;
   };
 
+  /// @returns The entry with the given ID.
+  [[nodiscard]]
+  auto get_entry(EntryID entry_id) -> Entry&
+  {
+    return entries[entry_id.id];
+  }
+
+  /// @returns The entry with the given ID (read-only access).
+  [[nodiscard]]
+  auto get_entry(EntryID entry_id) const -> Entry const&
+  {
+    return entries[entry_id.id];
+  }
+
+  /// Stores every entry in the AST.
+  DynArray<Entry> entries;
+
+  /// The current position in the input.
+  /// After a complete analysis, this should be equal to the length of the input.
+  /// After an incomplete analysis, this should be equal to the position where the analysis failed.
+  usize current_pos = 0;
+};
+
+/// Builds an AST.
+struct ASTBuilder
+{
+  using EntryID = AST::EntryID;
+  using Entry = AST::Entry;
+
+  AST ast;
+
   /// Creates a new entry of the given rule at the given position.
   auto begin_entry(CustomRuleRef rule_id, usize start_pos) -> EntryID;
 
@@ -52,18 +85,8 @@ struct AST
   /// Finalizes a failed entry.
   auto fail_current_entry() -> void;
 
-  /// Returns the entry with the given ID.
-  auto get_entry(EntryID entry_id) -> Entry&;
-
-  /// Stores every entry in the AST.
-  DynArray<Entry> entries;
-
   /// Stores the number of children during the creation of the AST.
-  /// TODO: separate AST creation process.
   DynArray<usize> children_counter;
-
-  /// The current position in the input.
-  usize current_pos = 0;
 };
 
 /// Contains the state of a text analysis.
@@ -81,7 +104,7 @@ struct AnalysisState
   StringView content;
 
   /// Current state of an AST being built.
-  AST ast;
+  ASTBuilder ast_builder;
 
   /// Returns a restore point at the current state.
   [[nodiscard]]
@@ -94,14 +117,14 @@ struct AnalysisState
   /// TODO: use UTF-8 aware consumption.
   auto consume(usize n) -> void
   {
-    ast.current_pos += n;
+    ast_builder.ast.current_pos += n;
   }
 
   /// Returns the current position in the input.
   [[nodiscard]]
   auto current_pos() const -> usize
   {
-    return ast.current_pos;
+    return ast_builder.ast.current_pos;
   }
 
   /// Returns a view of the remaining input.
@@ -112,25 +135,27 @@ struct AnalysisState
   }
 };
 
-struct AnalysisBaseResult
+struct ASTAnalysis
 {
-  AnalysisState state;
+  StringView document;
+  AST ast;
 };
 
-struct CompletedAnalysis : AnalysisBaseResult
-{
-};
-
-struct FailedAnalysis : AnalysisBaseResult
+struct CompletedASTAnalysis : ASTAnalysis
 {
 };
 
-using AnalysisResult = Result<CompletedAnalysis, FailedAnalysis>;
+struct FailedASTAnalysis : ASTAnalysis
+{
+  // TODO: add failure info.
+};
+
+using ASTAnalysisResult = Result<CompletedASTAnalysis, FailedASTAnalysis>;
 
 /// Analyzes the given document using the given grammar.
 /// If the analysis fails you can still read the last state of it.
 /// @note The grammar must be finalized.
 [[nodiscard]]
-auto analyze(Grammar const& grammar, StringView document) -> AnalysisResult;
+auto analyze(Grammar const& grammar, StringView document) -> ASTAnalysisResult;
 
 } // namespace jet::comp::peg

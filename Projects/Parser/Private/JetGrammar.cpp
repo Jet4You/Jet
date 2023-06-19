@@ -10,37 +10,53 @@ namespace jet::parser
 {
 using namespace comp::peg;
 
-static auto add_atomics(JetGrammar::Rules& rules, GrammarBuilder& b) -> void;
-static auto add_blocks(JetGrammar::Rules& rules, GrammarBuilder& b) -> void;
-static auto add_keywords(JetGrammar::Rules& rules, GrammarBuilder& b) -> void;
-static auto add_identifiers(JetGrammar::Rules& rules, GrammarBuilder& b) -> void;
-static auto add_declarations(JetGrammar::Rules& rules, GrammarBuilder& b) -> void;
-static auto add_module_level_statements(JetGrammar::Rules& rules, GrammarBuilder& b) -> void;
+struct GrammarBuildingCommon
+{
+  JetGrammarCapturesBuilder& rules;
+  GrammarBuilder& builder;
+};
+
+static auto add_base_rules(GrammarBuildingCommon grammar_common) -> void;
+static auto add_blocks(GrammarBuildingCommon grammar_common) -> void;
+static auto add_keywords(GrammarBuildingCommon grammar_common) -> void;
+static auto add_identifiers(GrammarBuildingCommon grammar_common) -> void;
+static auto add_declarations(GrammarBuildingCommon grammar_common) -> void;
+static auto add_expressions(GrammarBuildingCommon grammar_common) -> void;
+static auto add_module_level_statements(GrammarBuildingCommon grammar_common) -> void;
 
 auto build_grammar() -> JetGrammar
 {
-  auto r = JetGrammar::Rules();
+  using RT = JetGrammarRuleType;
+
+  auto r = JetGrammarCapturesBuilder();
   auto b = GrammarBuilder();
 
-  add_atomics(r, b);
-  add_blocks(r, b);
-  add_keywords(r, b);
-  add_identifiers(r, b);
-  add_declarations(r, b);
+  auto common = GrammarBuildingCommon{r, b};
 
-  add_module_level_statements(r, b);
+  add_base_rules(common);
+  add_blocks(common);
+  add_keywords(common);
+  add_identifiers(common);
+  add_expressions(common);
+  add_declarations(common);
+
+  add_module_level_statements(common);
 
   auto root = b.begin_rule(CombinatorRule::Star, true, "Module level statements");
   {
-    b.add_rule_ref(r.module_stmt);
+    b.add_rule_ref(r[RT::ModuleStmt]);
     b.end_rule();
   }
 
-  return JetGrammar(std::move(r), finalize_grammar(root, std::move(b)));
+  auto finalized = finalize_grammar(root, std::move(b), std::move(r));
+  return JetGrammar(std::move(finalized.capture_list), std::move(finalized.grammar));
 }
 
-static auto add_atomics(JetGrammar::Rules& rules, GrammarBuilder& b) -> void
+static auto add_base_rules(GrammarBuildingCommon grammar_common) -> void
 {
+  using RT = JetGrammarRuleType;
+  auto& [r, b] = grammar_common;
+
   auto line_comment = b.begin_rule(CombinatorRule::Seq, false);
   {
     (void)b.add_text("//");
@@ -50,7 +66,7 @@ static auto add_atomics(JetGrammar::Rules& rules, GrammarBuilder& b) -> void
 
   // Whitespace(s) / comments
   {
-    rules.ws = b.begin_rule(CombinatorRule::Plus);
+    b.begin_rule_and_assign(r[RT::Ws], CombinatorRule::Plus);
     {
       (void)b.begin_rule(CombinatorRule::Sor);
       {
@@ -64,63 +80,113 @@ static auto add_atomics(JetGrammar::Rules& rules, GrammarBuilder& b) -> void
 
   // Optional ws
   {
-    rules.opt_ws = b.begin_rule(CombinatorRule::Opt, false); // Optional `ws`
-    b.add_rule_ref(rules.ws);
+    b.begin_rule_and_assign(r[RT::OptWs], CombinatorRule::Opt, false); // Optional `ws`
+    b.add_rule_ref(r[RT::Ws]);
     b.end_rule();
   }
 }
 
-static auto add_blocks(JetGrammar::Rules& rules, GrammarBuilder& b) -> void
+static auto add_blocks(GrammarBuildingCommon grammar_common) -> void
 {
+  using RT = JetGrammarRuleType;
+  auto& [r, b] = grammar_common;
+
   //Code block
   {
-    rules.code_block = b.begin_rule(CombinatorRule::Seq, true, "Code block");
+    b.begin_rule_and_assign(r[RT::CodeBlock], CombinatorRule::Seq, true, "Code block");
     (void)b.add_text("{");
-    b.add_rule_ref(rules.opt_ws);
+    {
+      (void)b.begin_rule(CombinatorRule::Star);
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(r[RT::Statement]);
+      b.end_rule();
+    }
+    b.add_rule_ref(r[RT::OptWs]);
     (void)b.add_text("}");
     b.end_rule();
   }
 }
 
-static auto add_keywords(JetGrammar::Rules& rules, GrammarBuilder& b) -> void
+static auto add_keywords(GrammarBuildingCommon grammar_common) -> void
 {
+  using RT = JetGrammarRuleType;
+  auto& [r, b] = grammar_common;
+
   // Variable-related
-  rules.kw_var = b.add_text("var");
-  rules.kw_let = b.add_text("let");
+  r[RT::KwVar] = b.add_text("var");
+  r[RT::KwLet] = b.add_text("let");
 
   // Function-related
-  rules.kw_fn  = b.add_text("fn");
-  rules.kw_ret = b.add_text("ret");
+  r[RT::KwFn]  = b.add_text("fn");
+  r[RT::KwLet] = b.add_text("ret");
 }
 
-static auto add_identifiers(JetGrammar::Rules& rules, GrammarBuilder& b) -> void
+static auto add_identifiers(GrammarBuildingCommon grammar_common) -> void
 {
-  rules.name = b.begin_rule(CombinatorRule::Seq, true, "Name");
+  using RT = JetGrammarRuleType;
+  auto& [r, b] = grammar_common;
+
+  b.begin_rule_and_assign(r[RT::Name], CombinatorRule::Seq, true, "Name");
   {
     b.add_rule_ref(BuiltinRule::Ident);
     b.end_rule();
   }
 }
 
-static auto add_declarations(JetGrammar::Rules& rules, GrammarBuilder& b) -> void
+static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
 {
-  // Function declaration
+  using RT = JetGrammarRuleType;
+  auto& [r, b] = grammar_common;
+
+  // Expression
   {
-    rules.decl_function = b.begin_rule(CombinatorRule::Seq, true, "Function declaration");
-    b.add_rule_ref(rules.kw_fn);
-    b.add_rule_ref(rules.ws);
-    b.add_rule_ref(rules.name);
-    b.add_rule_ref(rules.opt_ws);
-    b.add_rule_ref(rules.code_block); // TODO: make separate code block for functions
+    b.begin_rule_and_assign(r[RT::Expression], CombinatorRule::Sor, true, "Expression");
+    {
+      // TODO:
+      (void)b.add_text("expr1");
+      (void)b.add_text("expr2");
+      (void)b.add_text("expr3");
+    }
+    b.end_rule();
+  }
+
+  // Statement
+  {
+    b.begin_rule_and_assign(r[RT::Statement], CombinatorRule::Seq, true, "Statement");
+    {
+      b.add_rule_ref(r[RT::Expression]);
+      b.add_rule_ref(r[RT::OptWs]);
+      (void)b.add_text(";");
+    }
     b.end_rule();
   }
 }
 
-static auto add_module_level_statements(JetGrammar::Rules& rules, GrammarBuilder& b) -> void
+static auto add_declarations(GrammarBuildingCommon grammar_common) -> void
 {
+  using RT = JetGrammarRuleType;
+  auto& [r, b] = grammar_common;
+
+  // Function declaration
   {
-    rules.module_stmt = b.begin_rule(CombinatorRule::Sor, false);
-    b.add_rule_ref(rules.decl_function);
+    b.begin_rule_and_assign(r[RT::DeclFunction], CombinatorRule::Seq, true, "Function declaration");
+    b.add_rule_ref(r[RT::KwFn]);
+    b.add_rule_ref(r[RT::Ws]);
+    b.add_rule_ref(r[RT::Name]);
+    b.add_rule_ref(r[RT::OptWs]);
+    b.add_rule_ref(r[RT::CodeBlock]); // TODO: make separate code block for functions
+    b.end_rule();
+  }
+}
+
+static auto add_module_level_statements(GrammarBuildingCommon grammar_common) -> void
+{
+  using RT = JetGrammarRuleType;
+  auto& [r, b] = grammar_common;
+
+  {
+    b.begin_rule_and_assign(r[RT::ModuleStmt], CombinatorRule::Sor, false);
+    b.add_rule_ref(r[RT::DeclFunction]);
     b.end_rule();
   }
 }
