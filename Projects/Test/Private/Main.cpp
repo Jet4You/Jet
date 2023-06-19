@@ -32,7 +32,7 @@ auto read_test_module(Path const& rel_path) -> Opt<String>
   return jet::core::read_file(Path("Projects/Test/cases") / rel_path);
 }
 
-auto test_module(Path const& rel_path, bool expect_success) -> void
+auto test_module_parse(const Path& rel_path, bool expect_success) -> void
 {
   auto module_content = read_test_module(rel_path);
   ASSERT_TRUE(module_content.has_value()) << "Failed to read test case file: " << rel_path.string();
