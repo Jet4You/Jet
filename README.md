@@ -57,12 +57,12 @@ Download the latest release (if available) and run the following command:
 jetc main
 ```
 
-This command compiles a file module called `main.jt`. If you didn't create one yet
+This command compiles a file module called `main.jet`. If you didn't create one yet
 follow the next steps.
 
 ### Basic application
 
-Create a file named "main.jt" with the following content:
+Create a file named "main.jet" with the following content:
 
 ```jet
 fn main {
