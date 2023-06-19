@@ -1,5 +1,6 @@
 #include <utility>
 #include <cassert>
+#include <variant>
 
 import Jet.Comp.PEG.GrammarBuilder;
 
@@ -18,14 +19,18 @@ namespace jet::comp::peg
 auto finalize_grammar(CustomRuleRef root_rule, GrammarBuilder&& builder) -> Grammar
 {
   builder.grammar.root_rule = root_rule;
+  builder.replace_placeholders();
   return std::move(builder.grammar);
 }
+
 
 GrammarBuilder::GrammarBuilder()
 {
   grammar.rule_registry.data.reserve(16 * 1024);
   grammar.text_registry.reserve(16 * 1024);
 
+  pending_placeholders.reserve(256);
+  placeholder_replacements.reserve(256);
   pending_rules.reserve(256);
 }
 
@@ -103,7 +108,8 @@ auto GrammarBuilder::end_rule() -> void
   auto& ended = pending_rules.back();
 
   auto rule_view = Span<usize>(rules.data).subspan(ended.rule.offset);
-  rule_view[StructuralView::NUM_CHILDREN_OFFSET] = ended.num_children;
+
+  rule_view[StructuralView::NUM_CHILDREN_OFFSET]    = ended.num_children;
   rule_view[StructuralView::NEXT_SIBLING_AT_OFFSET] = rules.data.size();
   pending_rules.pop_back();
 }
@@ -122,9 +128,29 @@ auto GrammarBuilder::add_rule_ref(CustomRuleRef ref_id) -> CustomRuleRef
   return this->push_custom_child(ref_id.to_encoded().value);
 }
 
+auto GrammarBuilder::add_rule_ref(PlaceholderRuleRef placeholder_rule) -> CustomRuleRef
+{
+  auto rule_id = this->push_custom_child(placeholder_rule.id);
+  pending_placeholders.push_back(rule_id);
+  return rule_id;
+}
+
 auto GrammarBuilder::add_rule_ref(BuiltinRule rule) -> CustomRuleRef
 {
   return this->push_custom_child(usize(rule));
+}
+
+auto GrammarBuilder::add_rule_ref(CustomOrPlaceholder& ref) -> CustomRuleRef
+{
+  if (ref.index() == 1)
+    return add_rule_ref(std::get<1>(ref));
+  else if (ref.index() == 2)
+    return add_rule_ref(std::get<2>(ref));
+
+  auto placeholder = this->create_placeholder();
+  ref              = placeholder;
+  auto rule_id     = add_rule_ref(placeholder);
+  return rule_id;
 }
 
 auto GrammarBuilder::add_text(StringView text, StringView rule_name) -> CustomRuleRef
@@ -140,6 +166,24 @@ auto GrammarBuilder::add_text(StringView text, StringView rule_name) -> CustomRu
 
   this->end_rule();
   return rule_ref;
+}
+
+auto GrammarBuilder::create_placeholder() -> PlaceholderRuleRef
+{
+  auto id = PlaceholderRuleRef{num_unique_placeholders++};
+  placeholder_replacements.resize(num_unique_placeholders);
+  return id;
+}
+
+auto GrammarBuilder::replace_placeholders() -> void
+{
+  for (auto& rule_ref : pending_placeholders) {
+    auto& rule_value  = grammar.rule_registry.data[rule_ref.offset];
+    auto  replacement = placeholder_replacements[rule_value];
+    assert(replacement.has_value() && "Grammar finalization: every placeholder has to be eventually replaced with a rule");
+
+    rule_value = replacement.value().to_encoded().value;
+  }
 }
 
 } // namespace jet::comp::peg

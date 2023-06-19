@@ -205,9 +205,8 @@ struct RuleRegistry
 
 /// Describes a grammar.
 /// Use the @c GrammarBuilder to create a grammar.
-class Grammar
+struct Grammar
 {
-public:
   RuleRegistry rule_registry;
   String       text_registry;
 

@@ -88,6 +88,10 @@ static auto dump_module(ModuleParse const& module_parse) -> void
     else {
       auto next_line_start = lines.line_starts[i + 1];
       line_content         = content.substr(line_start, next_line_start - line_start - 1);
+
+      if (line_content.empty())
+        continue;
+
       if (line_content.back() == '\r') {
         line_content = line_content.substr(0, line_content.size() - 1);
       }
@@ -167,6 +171,7 @@ static auto print_tabs(usize count) -> void
 static auto dump_parse_entry(JetGrammar const& grammar, ASTAnalysis const& analysis, AST::EntryID entry_id, usize tabs = 0)
   -> void
 {
+  using RT      = JetGrammarRuleType;
   namespace fmt = comp::fmt;
   auto& entry   = analysis.ast.get_entry(entry_id);
 
@@ -174,7 +179,10 @@ static auto dump_parse_entry(JetGrammar const& grammar, ASTAnalysis const& analy
   fmt::println("Rule: {}", entry.rule_id.offset);
   print_tabs(tabs);
   fmt::println(" - range: [{}, {})", entry.start_pos, entry.end_pos);
-  if (entry.rule_id == grammar.rules.name) {
+
+  auto is_rule = [&](RT rt) -> bool { return entry.rule_id == grammar.rules[rt]; };
+
+  if (is_rule(RT::Name) || is_rule(RT::Expression)) {
     print_tabs(tabs);
     fmt::println(" - content: \"{}\"", analysis.document.substr(entry.start_pos, entry.end_pos - entry.start_pos));
   }

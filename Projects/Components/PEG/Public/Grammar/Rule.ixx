@@ -132,6 +132,15 @@ struct CustomRuleRef final
   auto operator==(CustomRuleRef const& other) const -> bool = default;
 };
 
+/// Placeholder id
+struct PlaceholderRuleRef final
+{
+  /// An arbitrary, unique ID of the placeholder
+  usize id = 0;
+
+  auto operator==(PlaceholderRuleRef const& other) const -> bool = default;
+};
+
 /// An encoded kind of a rule.
 /// For structural and builtin rules, the value is the kind of the rule.
 /// For custom rules the value is the offset within the RuleRegistry.

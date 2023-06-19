@@ -9,6 +9,7 @@ module;
 #include <string_view>
 #include <string>
 #include <filesystem>
+#include <variant>
 
 export module Jet.Comp.Foundation.StdTypes;
 
@@ -33,6 +34,9 @@ using f64 = double;
 
 template <typename T>
 using Opt = std::optional<T>;
+
+template <typename... Ts>
+using Variant = std::variant<Ts...>;
 
 template <typename T>
 using Span = std::span<T, std::dynamic_extent>;
