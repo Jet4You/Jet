@@ -16,7 +16,7 @@ file(GLOB_RECURSE SOURCES
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE JetCompiler JetParser JetCore gtest gtest_main)
+target_link_libraries(${PROJECT_NAME} PRIVATE JetCompiler JetParser JetCore Jet_Comp_Format gtest gtest_main)
 
 if (MSVC)
   target_compile_options(${PROJECT_NAME} PRIVATE "/utf-8")
