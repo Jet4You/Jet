@@ -101,7 +101,9 @@ auto analyze(Grammar const& grammar, StringView document) -> ASTAnalysisResult
   auto context = MatcherContext{grammar, state};
 
   auto match_result = try_match_rule_ref(context, grammar.root_rule);
-  if (!match_result.success) {
+  auto is_at_end = state.ast_builder.ast.current_pos == document.size();
+
+  if (!match_result.success || !is_at_end) {
     return error(FailedASTAnalysis{document, std::move(state.ast_builder.ast)});
   }
 
