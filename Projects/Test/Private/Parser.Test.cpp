@@ -58,3 +58,26 @@ TEST(Parse_Types, Vector2_struct_succeeds)
   test_module_parse("types/Vector2.jet");
 }
 
+// "expressions" subfolder
+
+TEST(Parse_Expressions, add_numbers)
+{
+  test_module_parse("expressions/AddNumbers.jet");
+}
+
+TEST(Parse_Expressions, add_variables)
+{
+  test_module_parse("expressions/AddVariables.jet");
+}
+
+TEST(Parse_Expressions, compound_math_expression)
+{
+  test_module_parse("expressions/CompoundMathExpr.jet");
+}
+
+TEST(Parse_Expressions, compound_expression)
+{
+  test_module_parse("expressions/CompoundExpr.jet");
+}
+
+
