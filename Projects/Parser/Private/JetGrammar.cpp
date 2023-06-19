@@ -42,7 +42,7 @@ auto build_grammar() -> JetGrammar
 
   add_module_level_statements(common);
 
-  auto root = b.begin_rule(CombinatorRule::Star, true, "Module level statements");
+  auto root = b.begin_rule(CombinatorRule::Plus, true, "Module level statements");
   {
     b.add_rule_ref(r[RT::ModuleStmt]);
     b.end_rule();

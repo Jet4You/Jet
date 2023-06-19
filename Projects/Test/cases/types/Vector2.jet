@@ -1,0 +1,11 @@
+struct Vector2 {
+  x: f64,
+  y: f64,
+
+  fn len(self) -> f64 {
+    ret (self.x * self.x + self.y * self.y).sqrt();
+  }
+}
+
+fn main {
+}
