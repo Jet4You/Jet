@@ -82,6 +82,14 @@ Here is a list of all projects in the codebase:
             The app project that creates the <code>rigvm</code> executable.
         </td>
     </tr>
+    <tr><td colspan=3 align=center>Other</td></tr>
+    <tr>
+        <td><a href="Test">Test</a></td>
+        <td><code>-</code></td>
+        <td>
+            Tests the behavior of various components of the codebase.
+        </td>
+    </tr>
 </table>
 
 ### Component projects
