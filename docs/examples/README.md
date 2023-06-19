@@ -11,7 +11,7 @@ jetc [file-name] -o [file-name] && .\[file-name].exe
 e.g.:
 
 ```sh
-jetc hello-world.jt -o hello-world && .\hello-world.exe
+jetc hello-world.jet -o hello-world && .\hello-world.exe
 ```
 
 Examples that are put in separate folders with `jetpack.toml` file
@@ -27,15 +27,15 @@ jetp build-run .
 		<th>Name</th><th>Brief description</th>
 	</tr>
 	<tr>
-		<td><a href="HelloWorld.jt">Hello World</a></td>
+		<td><a href="HelloWorld.jet">Hello World</a></td>
 		<td>A sample "hello world" program</td>
 	</tr>
 	<tr>
-		<td><a href="Fib.jt">Fibonacci sequence</a></td>
+		<td><a href="Fib.jet">Fibonacci sequence</a></td>
 		<td>Prints a Fibonacci sequence up to a user-input number</td>
 	</tr>
 	<tr>
-		<td><a href="GuessANumber.jt">Guess a number</a></td>
+		<td><a href="GuessANumber.jet">Guess a number</a></td>
 		<td>
 			The program generates a random number and asks the user
 			to guess it

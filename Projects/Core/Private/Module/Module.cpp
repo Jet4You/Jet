@@ -20,7 +20,7 @@ auto find_module(Path module_path) -> Opt<Path>
     return std::nullopt;
   }
 
-  module_path.replace_extension(".jt");
+  module_path.replace_extension(".jet");
   // Try the modified path.
   return find_module(module_path);
 }
