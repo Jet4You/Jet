@@ -197,15 +197,7 @@ static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
 //      b.add_rule_ref(r[RT::StringLiteral]);
       b.add_rule_ref(r[RT::IntegerLiteral]);
       b.add_rule_ref(r[RT::RealLiteral]);
-      {
-        b.begin_rule(CombinatorRule::Seq);
-        (void)b.add_text("(");
-        b.add_rule_ref(r[RT::OptWs]);
-        b.add_rule_ref(r[RT::Expression]);
-        b.add_rule_ref(r[RT::OptWs]);
-        (void)b.add_text(")");
-        b.end_rule();
-      }
+      b.add_rule_ref(r[RT::ExprInParen]);
     }
     b.end_rule();
   }
@@ -352,6 +344,17 @@ static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
         b.end_rule(); // infix_seq
       }
     }
+    b.end_rule();
+  }
+
+  // Expr In Paren
+  {
+    b.begin_rule_and_assign(r[RT::ExprInParen], CombinatorRule::Seq);
+    (void)b.add_text("(");
+    b.add_rule_ref(r[RT::OptWs]);
+    b.add_rule_ref(r[RT::Expression]);
+    b.add_rule_ref(r[RT::OptWs]);
+    (void)b.add_text(")");
     b.end_rule();
   }
 
