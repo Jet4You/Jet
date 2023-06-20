@@ -18,6 +18,8 @@ namespace jet::comp::peg
 
 auto finalize_grammar(CustomRuleRef root_rule, GrammarBuilder&& builder) -> Grammar
 {
+  assert(builder.pending_rules.empty() && "Not all rules were ended");
+
   builder.grammar.root_rule = root_rule;
   builder.replace_placeholders();
   return std::move(builder.grammar);
