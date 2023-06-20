@@ -24,13 +24,10 @@ static auto dump_module(ModuleParse const& module_parse) -> void;
 static auto dump_analysis(JetGrammar const& grammar, ASTAnalysis const& analysis) -> void;
 
 static auto print_tabs(usize count) -> void;
-static auto print_rule(Grammar const& g, RuleRegistryView current, usize tabs = 0) -> void;
-static auto print_rules(Grammar const& g) -> void;
 
 auto parse(StringView module_content) -> Result<ModuleParse, FailedParse>
 {
   auto grammar = build_grammar();
-//  print_rules(grammar.peg);
 
   auto module_parse    = ModuleParse();
   module_parse.content = module_content;
@@ -98,65 +95,6 @@ static auto dump_module(ModuleParse const& module_parse) -> void
     }
 
     std::cout << i << ": " << line_content << '\n';
-  }
-}
-
-static auto print_rules(Grammar const& g) -> void
-{
-  namespace fmt = comp::fmt;
-
-  auto root_view = g.rule_registry.view_at(g.root_rule.offset);
-  print_rule(g, root_view);
-}
-
-static auto print_rule(Grammar const& g, RuleRegistryView current, usize tabs) -> void
-{
-  using comp::peg::to_string;
-  namespace fmt = comp::fmt;
-
-  if (current.at_end()) {
-    return;
-  }
-
-  if (current.at_structural()) {
-    auto method = current.as_structure();
-    if (method.is_text()) {
-      print_tabs(tabs);
-      fmt::println("\"{}\",", method.get_text(g.text_registry));
-    }
-    else {
-      auto rule_name = method.get_name(g.text_registry);
-      if (!rule_name.empty()) {
-        print_tabs(tabs);
-        fmt::println("[{}]", rule_name);
-      }
-
-      print_tabs(tabs);
-      fmt::println("{} {{", to_string(method.kind().as_combinator()));
-
-      current = method.first_child();
-      for (auto c = usize(0); c < method.num_children(); ++c) {
-        print_rule(g, current, tabs + 1);
-        current = current.next_sibling();
-      }
-
-      print_tabs(tabs);
-      fmt::println("}}");
-    }
-  }
-  else {
-    auto rule = current.as_rule();
-
-    if (rule.is_builtin()) {
-      print_tabs(tabs);
-      fmt::println("{}", comp::peg::to_string(rule.as_builtin()));
-      return;
-    }
-
-    auto rule_view = g.rule_registry.view_at(rule.to_custom().offset);
-
-    //    fmt::print("[ID: {}] ", rule.as_ref());
-    print_rule(g, rule_view, tabs);
   }
 }
 
