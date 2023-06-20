@@ -87,6 +87,21 @@ struct ASTBuilder
 
   /// Stores the number of children during the creation of the AST.
   DynArray<usize> children_counter;
+
+  /// This will be removed in the future:
+#ifndef NDEBUG
+  auto push_tested_rule(StringView rule_name) -> void
+  {
+    test_rule_stack.push_back(rule_name);
+  }
+
+  auto pop_tested_rule() -> void
+  {
+    test_rule_stack.pop_back();
+  }
+
+  DynArray<StringView> test_rule_stack;
+#endif
 };
 
 /// Contains the state of a text analysis.
