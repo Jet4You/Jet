@@ -30,7 +30,7 @@ static auto print_rules(Grammar const& g) -> void;
 auto parse(StringView module_content) -> Result<ModuleParse, FailedParse>
 {
   auto grammar = build_grammar();
-  print_rules(grammar.peg);
+//  print_rules(grammar.peg);
 
   auto module_parse    = ModuleParse();
   module_parse.content = module_content;
