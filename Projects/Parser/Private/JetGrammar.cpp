@@ -168,7 +168,7 @@ static auto add_keywords(GrammarBuildingCommon grammar_common) -> void
 
   // Function-related
   r[RT::KwFn]  = b.add_text("fn");
-  r[RT::KwLet] = b.add_text("ret");
+  r[RT::KwRet] = b.add_text("ret");
 }
 
 static auto add_identifiers(GrammarBuildingCommon grammar_common) -> void
@@ -360,11 +360,16 @@ static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
 
   // Statement
   {
-    b.begin_rule_and_assign(r[RT::Statement], CombinatorRule::Seq, true, "Statement");
+    b.begin_rule_and_assign(r[RT::Statement], CombinatorRule::Sor, true, "Statement");
+    b.add_rule_ref(r[RT::DeclVariable]);
+    b.add_rule_ref(r[RT::DeclFunction]);
+    // Expression statement
     {
+      (void)b.begin_rule(CombinatorRule::Seq);
       b.add_rule_ref(r[RT::Expression]);
       b.add_rule_ref(r[RT::OptWs]);
       (void)b.add_text(";");
+      b.end_rule();
     }
     b.end_rule();
   }
@@ -374,6 +379,33 @@ static auto add_declarations(GrammarBuildingCommon grammar_common) -> void
 {
   using RT     = JetGrammarRuleType;
   auto& [r, b] = grammar_common;
+
+  // Variable definition
+  {
+    b.begin_rule_and_assign(r[RT::DeclVariable], CombinatorRule::Seq, true, "Variable declaration");
+    // `var` or `let` keyword
+    {
+      (void)b.begin_rule(CombinatorRule::Sor);
+      b.add_rule_ref(r[RT::KwVar]);
+      b.add_rule_ref(r[RT::KwLet]);
+      b.end_rule();
+    }
+    b.add_rule_ref(r[RT::Ws]);
+    b.add_rule_ref(r[RT::Name]);
+
+    // Opt initializer
+    {
+      (void)b.begin_rule(CombinatorRule::Opt);
+      b.add_rule_ref(r[RT::OptWs]);
+      (void)b.add_text("=");
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(r[RT::Expression]);
+      b.end_rule();
+    }
+    b.add_rule_ref(r[RT::OptWs]);
+    (void)b.add_text(";");
+    b.end_rule();
+  }
 
   // Function declaration
   {
