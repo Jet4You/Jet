@@ -18,15 +18,32 @@ auto build_grammar() -> JetGrammar;
 
 enum class JetGrammarRuleType
 {
-  Expression,
-  Statement,
-
   // Root:
   ModuleStmt,
 
   // Base pieces
   Ws, // Whitespace(s) / comments
   OptWs, // Optional `ws`
+
+  // Literals
+  IntegerLiteral,
+  RealLiteral,
+  StringLiteral,
+  CharLiteral,
+
+  // Operators
+  FunctionCallOperator,
+  SubscriptOperator,
+
+  PrefixOperator,
+  InfixOperator,
+  PostfixOperator,
+
+  // Expressions
+  ExprAtomic, // an atomic expression fragment
+  Expression,
+  ExprInParen,
+  Statement,
 
   // Keywords
 

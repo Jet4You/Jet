@@ -101,7 +101,7 @@ auto analyze(Grammar const& grammar, StringView document) -> ASTAnalysisResult
   auto context = MatcherContext{grammar, state};
 
   auto match_result = try_match_rule_ref(context, grammar.root_rule);
-  auto is_at_end = state.ast_builder.ast.current_pos == document.size();
+  auto is_at_end    = state.ast_builder.ast.current_pos == document.size();
 
   if (!match_result.success || !is_at_end) {
     return error(FailedASTAnalysis{document, std::move(state.ast_builder.ast)});
@@ -117,7 +117,26 @@ static auto try_match_rule(MatcherContext ctx, RuleRegistryView rule) -> RuleMat
   }
 
   if (rule.at_structural()) {
-    return try_match_structural_rule(ctx, rule.as_structure());
+
+    // Add rule name to the stack for debug purposes:
+#ifndef NDEBUG
+    auto name = rule.as_structure().get_name(ctx.grammar.text_registry);
+    /// For debug purposes
+    if (!name.empty()) {
+      ctx.state.ast_builder.push_tested_rule(name);
+    }
+#endif
+
+    auto result = try_match_structural_rule(ctx, rule.as_structure());
+
+    // Remove rule name from the stack:
+#ifndef NDEBUG
+    if (!name.empty()) {
+      ctx.state.ast_builder.pop_tested_rule();
+    }
+#endif
+
+    return result;
   }
 
   auto enc_rule = rule.as_rule();
@@ -155,8 +174,9 @@ static auto try_match_structural_rule(MatcherContext ctx, StructuralView rule) -
   }
 
   if (rule.is_text()) {
-    auto text    = rule.get_text(ctx.grammar.text_registry);
-    auto success = ctx.state.current_str().starts_with(text);
+    auto text        = rule.get_text(ctx.grammar.text_registry);
+    auto current_str = ctx.state.current_str();
+    auto success     = current_str.starts_with(text);
 
     if (success) {
       ctx.state.consume(text.size());
