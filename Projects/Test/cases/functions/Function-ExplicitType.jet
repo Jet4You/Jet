@@ -1,0 +1,7 @@
+fn foo: void {
+
+}
+
+fn main {
+  foo();
+}
