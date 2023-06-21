@@ -29,6 +29,21 @@ TEST(Parse_Functions, function_in_function_succeeds)
   test_module_parse("functions/FunctionInFunction.jet");
 }
 
+TEST(Parse_Functions, function_explicit_type_succeeds)
+{
+  test_module_parse("functions/Function-ExplicitType.jet");
+}
+
+TEST(Parse_Functions, function_with_params_succeeds)
+{
+  test_module_parse("functions/Function-WithParams.jet");
+}
+
+TEST(Parse_Functions, function_with_params_and_explicit_type_succeeds)
+{
+  test_module_parse("functions/Function-WithParams-ExplicitType.jet");
+}
+
 // "variables" subfolder
 
 TEST(Parse_Variables, single_variable_i32_succeeds)

@@ -205,11 +205,54 @@ static auto add_identifiers(GrammarBuildingCommon grammar_common) -> void
   using RT     = JetGrammarRuleType;
   auto& [r, b] = grammar_common;
 
-  b.begin_rule_and_assign(r[RT::Name], CombinatorRule::Seq, true, "Name");
+  // Explicit type
+  {{b.begin_rule_and_assign(r[RT::ExplicitType], CombinatorRule::Seq, true, "Explicit type");
+
+  b.add_rule_ref(r[RT::OptWs]);
+  (void)b.add_text(":");
+  b.add_rule_ref(r[RT::OptWs]);
+  b.add_rule_ref(r[RT::Type]);
+
+  b.end_rule();
+}
+
+{
+  b.begin_rule_and_assign(r[RT::OptExplicitType], CombinatorRule::Opt);
+  b.add_rule_ref(r[RT::ExplicitType]);
+  b.end_rule();
+}
+} // namespace jet::parser
+
+// Initializer
+{
   {
-    b.add_rule_ref(BuiltinRule::Ident);
+    b.begin_rule_and_assign(r[RT::Initializer], CombinatorRule::Seq, true, "Initializer");
+    b.add_rule_ref(r[RT::OptWs]);
+    (void)b.add_text("=");
+    b.add_rule_ref(r[RT::OptWs]);
+    b.add_rule_ref(r[RT::Expression]);
     b.end_rule();
   }
+
+  {
+    b.begin_rule_and_assign(r[RT::OptInitializer], CombinatorRule::Opt);
+    b.add_rule_ref(r[RT::Initializer]);
+    b.end_rule();
+  }
+}
+
+b.begin_rule_and_assign(r[RT::Name], CombinatorRule::Seq, true, "Name");
+{
+  b.add_rule_ref(BuiltinRule::Ident);
+  b.end_rule();
+}
+
+b.begin_rule_and_assign(r[RT::Type], CombinatorRule::Seq, true, "Type");
+{
+  b.add_rule_ref(r[RT::Name]);
+  // TODO: add type parameters
+  b.end_rule();
+}
 }
 
 static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
@@ -422,21 +465,15 @@ static auto add_declarations(GrammarBuildingCommon grammar_common) -> void
     b.add_rule_ref(r[RT::Ws]);
     b.add_rule_ref(r[RT::Name]);
 
-    // Opt initializer
-    {
-      (void)b.begin_rule(CombinatorRule::Opt);
-      b.add_rule_ref(r[RT::OptWs]);
-      (void)b.add_text("=");
-      b.add_rule_ref(r[RT::OptWs]);
-      b.add_rule_ref(r[RT::Expression]);
-      b.end_rule();
-    }
+    // [: type]
+    b.add_rule_ref(r[RT::OptExplicitType]);
+    // [: expr]
+    b.add_rule_ref(r[RT::OptInitializer]);
+
     b.add_rule_ref(r[RT::OptWs]);
     (void)b.add_text(";");
     b.end_rule();
   }
-
-
 
   // Function-related
   {
@@ -446,27 +483,10 @@ static auto add_declarations(GrammarBuildingCommon grammar_common) -> void
       b.begin_rule_and_assign(r[RT::FunctionParameter], CombinatorRule::Seq, false, "Function parameter");
 
       b.add_rule_ref(r[RT::Name]);
-
       // [: type]
-      {
-        (void)b.begin_rule(CombinatorRule::Opt);
-        b.add_rule_ref(r[RT::OptWs]);
-        (void)b.add_text(":");
-        b.add_rule_ref(r[RT::OptWs]);
-        // TODO: replace `Name` with `Type`
-        b.add_rule_ref(r[RT::Name]);
-        b.end_rule();
-      }
-
+      b.add_rule_ref(r[RT::OptExplicitType]);
       // [= expr]
-      {
-        (void)b.begin_rule(CombinatorRule::Opt);
-        b.add_rule_ref(r[RT::OptWs]);
-        (void)b.add_text("=");
-        b.add_rule_ref(r[RT::OptWs]);
-        b.add_rule_ref(r[RT::Expression]);
-        b.end_rule();
-      }
+      b.add_rule_ref(r[RT::OptInitializer]);
 
       b.end_rule();
     }
@@ -529,6 +549,8 @@ static auto add_declarations(GrammarBuildingCommon grammar_common) -> void
         b.add_rule_ref(r[RT::FunctionParameters]);
         b.end_rule();
       }
+
+      b.add_rule_ref(r[RT::OptExplicitType]);
 
       b.add_rule_ref(r[RT::OptWs]);
       b.add_rule_ref(r[RT::CodeBlock]); // TODO: make separate code block for functions
