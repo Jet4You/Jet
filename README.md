@@ -1,16 +1,23 @@
 # Jet Lang 🚀
 
+<table>
+  <tr>
+    <th><a href="https://github.com/orgs/Jet4You/projects/1">Project development</a></th>
+    <th><a href="https://github.com/Jet4You/Jet/issues/19">Current Status</a></th>
+  </tr>
+</table>
+
 A prototype implementation of the Jet language.
 
 > **Note**  
-> This is a toy project and it is in a very early stage of the development.
+> This project is in a very early stage of the development.
 
 The project works only on Windows at the moment, because I decided to play with
 C++20 modules and try to get the most out of it. We use CMake as our build tool.
 
 ## What is Jet
 
-A C-like, general-purpose programming language that compiles to a native code.
+A C-like, general-purpose programming language that compiles to a native code (through LLVM IR).
 
 Goals:
 
@@ -62,7 +69,7 @@ follow the next steps.
 
 ### Basic application
 
-Create a file named "main.jet" with the following content:
+Create a file named `main.jet` with the following content:
 
 ```jet
 fn main {
@@ -71,7 +78,7 @@ fn main {
 ```
 
 Now run the command mentioned above. The compiler should create a new executable
-called "main.exe". Run the program with:
+called `main.exe`. Run the program with:
 
 ```sh
 .\main.exe
