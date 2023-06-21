@@ -62,6 +62,9 @@ enum class JetGrammarRuleType
   DeclVariable,
   DeclFunction,
 
+  FunctionParameter,
+  FunctionParameters,
+
   // Blocks
   CodeBlock,
 
