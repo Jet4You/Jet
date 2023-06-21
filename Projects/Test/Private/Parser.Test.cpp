@@ -29,6 +29,11 @@ TEST(Parse_Functions, function_in_function_succeeds)
   test_module_parse("functions/FunctionInFunction.jet");
 }
 
+TEST(Parse_Functions, function_with_return_succeeds)
+{
+  test_module_parse("functions/Function-WithReturn.jet");
+}
+
 TEST(Parse_Functions, function_explicit_type_succeeds)
 {
   test_module_parse("functions/Function-ExplicitType.jet");
@@ -42,6 +47,11 @@ TEST(Parse_Functions, function_with_params_succeeds)
 TEST(Parse_Functions, function_with_params_and_explicit_type_succeeds)
 {
   test_module_parse("functions/Function-WithParams-ExplicitType.jet");
+}
+
+TEST(Parse_Functions, function_with_params_and_explicit_type_and_return_succeeds)
+{
+  test_module_parse("functions/Function-WithParams-ExplicitType-WithReturn.jet");
 }
 
 // "variables" subfolder
