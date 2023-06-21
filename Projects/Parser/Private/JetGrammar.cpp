@@ -23,6 +23,7 @@ static auto add_keywords(GrammarBuildingCommon grammar_common) -> void;
 static auto add_identifiers(GrammarBuildingCommon grammar_common) -> void;
 static auto add_declarations(GrammarBuildingCommon grammar_common) -> void;
 static auto add_expressions(GrammarBuildingCommon grammar_common) -> void;
+static auto add_control_flow(GrammarBuildingCommon grammar_common) -> void;
 static auto add_module_level_statements(GrammarBuildingCommon grammar_common) -> void;
 
 auto build_grammar() -> JetGrammar
@@ -40,6 +41,7 @@ auto build_grammar() -> JetGrammar
   add_keywords(common);
   add_identifiers(common);
   add_expressions(common);
+  add_control_flow(common);
   add_declarations(common);
 
   add_module_level_statements(common);
@@ -435,6 +437,7 @@ static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
     b.begin_rule_and_assign(r[RT::Statement], CombinatorRule::Sor, true, "Statement");
     b.add_rule_ref(r[RT::DeclVariable]);
     b.add_rule_ref(r[RT::DeclFunction]);
+    b.add_rule_ref(r[RT::ReturnStatement]);
     // Expression statement
     {
       (void)b.begin_rule(CombinatorRule::Seq);
@@ -556,6 +559,55 @@ static auto add_declarations(GrammarBuildingCommon grammar_common) -> void
       b.add_rule_ref(r[RT::CodeBlock]); // TODO: make separate code block for functions
       b.end_rule();
     }
+  }
+}
+
+static auto add_control_flow(GrammarBuildingCommon grammar_common) -> void
+{
+  using RT     = JetGrammarRuleType;
+  auto& [r, b] = grammar_common;
+
+  // Return statement
+  {
+    b.begin_rule_and_assign(r[RT::ReturnStatement], CombinatorRule::Seq, true, "Return statement");
+    b.add_rule_ref(r[RT::KwRet]);
+
+    // ret[opt-expr];
+    {
+      (void)b.begin_rule(CombinatorRule::Opt);
+
+      // Either:
+      // ret expr;
+      // ret(expr);
+      {
+        (void)b.begin_rule(CombinatorRule::Sor);
+
+        // ret expr;
+        {
+          (void)b.begin_rule(CombinatorRule::Seq);
+          b.add_rule_ref(r[RT::Ws]);
+          b.add_rule_ref(r[RT::Expression]);
+          b.end_rule();
+        }
+
+        // ret(expr);
+        {
+          (void)b.begin_rule(CombinatorRule::Seq);
+          b.add_rule_ref(r[RT::OptWs]);
+          (void)b.add_text("(");
+          b.add_rule_ref(r[RT::ExprInParen]);
+          (void)b.add_text(")");
+          b.end_rule();
+        }
+
+        b.end_rule();
+      }
+      b.end_rule();
+    }
+
+    b.add_rule_ref(r[RT::OptWs]);
+    (void)b.add_text(";");
+    b.end_rule();
   }
 }
 

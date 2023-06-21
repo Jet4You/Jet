@@ -75,6 +75,9 @@ enum class JetGrammarRuleType
   // Blocks
   CodeBlock,
 
+  // Control flow
+  ReturnStatement,
+
   MAX
 };
 
