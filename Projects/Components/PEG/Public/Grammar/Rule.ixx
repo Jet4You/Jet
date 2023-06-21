@@ -40,6 +40,10 @@ enum class CombinatorRule : i32
   /// Tries to match as many times as possible.
   Plus,
 
+  /// Consumes one character if
+  /// Matches if the sequence inside fails.
+  OneIfNotAt,
+
   MAX,
 };
 
@@ -55,6 +59,9 @@ enum class StructureRule : i32
 enum class BuiltinRule : i32
 {
   Whitespace = i32(StructureRule::MAX),
+
+  /// Exactly one character, no requirements
+  Any,
 
   /// Alpha [a-z], [A-Z]
   Alpha,
