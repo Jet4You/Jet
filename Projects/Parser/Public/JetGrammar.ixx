@@ -22,7 +22,7 @@ enum class JetGrammarRuleType
   ModuleStmt,
 
   // Base pieces
-  Ws, // Whitespace(s) / comments
+  Ws,    // Whitespace(s) / comments
   OptWs, // Optional `ws`
 
   // Literals
@@ -57,6 +57,7 @@ enum class JetGrammarRuleType
 
   // Identifiers
   Name,
+  Type,
 
   // Declarations
   DeclVariable,
@@ -65,6 +66,12 @@ enum class JetGrammarRuleType
   FunctionParameter,
   FunctionParameters,
 
+  ExplicitType,
+  OptExplicitType,
+
+  Initializer,
+  OptInitializer,
+
   // Blocks
   CodeBlock,
 
@@ -72,12 +79,12 @@ enum class JetGrammarRuleType
 };
 
 using JetGrammarCapturesBuilder = GrammarCaptureListBuilder<JetGrammarRuleType>;
-using JetGrammarRules = GrammarCaptureList<JetGrammarRuleType>;
+using JetGrammarRules           = GrammarCaptureList<JetGrammarRuleType>;
 
 struct JetGrammar
 {
   JetGrammarRules rules;
-  Grammar peg;
+  Grammar         peg;
 };
 
-}
+} // namespace jet::parser

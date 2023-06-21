@@ -31,7 +31,7 @@ fn main
   }
 }
 
-fn ask_for_number(num: u32) -> i32 {
+fn ask_for_number(num: u32): i32 {
   loop {
     let maybe_num = prompt::<i32>("Guess a number in between [0, 100]");
     if err (maybe_num.err()) {
