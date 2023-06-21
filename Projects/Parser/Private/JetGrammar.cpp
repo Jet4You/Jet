@@ -44,9 +44,15 @@ auto build_grammar() -> JetGrammar
 
   add_module_level_statements(common);
 
-  auto root = b.begin_rule(CombinatorRule::Plus, true, "Module level statements");
+  auto root = b.begin_rule(CombinatorRule::Seq, true, "Module level statements");
   {
-    b.add_rule_ref(r[RT::ModuleStmt]);
+    {
+      (void)b.begin_rule(CombinatorRule::Plus);
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(r[RT::ModuleStmt]);
+      b.end_rule();
+    }
+    b.add_rule_ref(r[RT::OptWs]);
     b.end_rule();
   }
 
@@ -430,15 +436,104 @@ static auto add_declarations(GrammarBuildingCommon grammar_common) -> void
     b.end_rule();
   }
 
-  // Function declaration
+
+
+  // Function-related
   {
-    b.begin_rule_and_assign(r[RT::DeclFunction], CombinatorRule::Seq, true, "Function declaration");
-    b.add_rule_ref(r[RT::KwFn]);
-    b.add_rule_ref(r[RT::Ws]);
-    b.add_rule_ref(r[RT::Name]);
-    b.add_rule_ref(r[RT::OptWs]);
-    b.add_rule_ref(r[RT::CodeBlock]); // TODO: make separate code block for functions
-    b.end_rule();
+    // Function parameter
+    // name[: type][= expr]
+    {
+      b.begin_rule_and_assign(r[RT::FunctionParameter], CombinatorRule::Seq, false, "Function parameter");
+
+      b.add_rule_ref(r[RT::Name]);
+
+      // [: type]
+      {
+        (void)b.begin_rule(CombinatorRule::Opt);
+        b.add_rule_ref(r[RT::OptWs]);
+        (void)b.add_text(":");
+        b.add_rule_ref(r[RT::OptWs]);
+        // TODO: replace `Name` with `Type`
+        b.add_rule_ref(r[RT::Name]);
+        b.end_rule();
+      }
+
+      // [= expr]
+      {
+        (void)b.begin_rule(CombinatorRule::Opt);
+        b.add_rule_ref(r[RT::OptWs]);
+        (void)b.add_text("=");
+        b.add_rule_ref(r[RT::OptWs]);
+        b.add_rule_ref(r[RT::Expression]);
+        b.end_rule();
+      }
+
+      b.end_rule();
+    }
+
+    // Function parameters
+    {
+      auto opt_param_list = CustomRuleRef();
+      // Parameter list
+      {
+        auto const comma = b.add_text(",");
+        // param(, param)*,?
+        auto const param_list = b.begin_rule(CombinatorRule::Seq, false, "Param list");
+        {
+          b.add_rule_ref(r[RT::FunctionParameter]);
+          {
+            (void)b.begin_rule(CombinatorRule::Star);
+            b.add_rule_ref(r[RT::OptWs]);
+            b.add_rule_ref(comma);
+            b.add_rule_ref(r[RT::OptWs]);
+            b.add_rule_ref(r[RT::FunctionParameter]);
+            b.end_rule();
+          }
+          b.add_rule_ref(r[RT::OptWs]);
+          {
+            (void)b.begin_rule(CombinatorRule::Opt);
+            b.add_rule_ref(comma);
+            b.end_rule();
+          }
+          b.end_rule();
+        }
+
+        opt_param_list = b.begin_rule(CombinatorRule::Opt, false, "Opt Param List");
+        {
+          b.add_rule_ref(r[RT::OptWs]);
+          b.add_rule_ref(param_list);
+          b.add_rule_ref(r[RT::OptWs]);
+          b.end_rule();
+        }
+      }
+
+      b.begin_rule_and_assign(r[RT::FunctionParameters], CombinatorRule::Seq, true, "Function parameters");
+      (void)b.add_text("(");
+      b.add_rule_ref(opt_param_list);
+      (void)b.add_text(")");
+
+      b.end_rule();
+    }
+
+    // Function declaration
+    {
+      b.begin_rule_and_assign(r[RT::DeclFunction], CombinatorRule::Seq, true, "Function declaration");
+      b.add_rule_ref(r[RT::KwFn]);
+      b.add_rule_ref(r[RT::Ws]);
+      b.add_rule_ref(r[RT::Name]);
+
+      // Opt function parameters
+      {
+        (void)b.begin_rule(CombinatorRule::Opt);
+        b.add_rule_ref(r[RT::OptWs]);
+        b.add_rule_ref(r[RT::FunctionParameters]);
+        b.end_rule();
+      }
+
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(r[RT::CodeBlock]); // TODO: make separate code block for functions
+      b.end_rule();
+    }
   }
 }
 
