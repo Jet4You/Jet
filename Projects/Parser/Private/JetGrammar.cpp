@@ -119,21 +119,44 @@ static auto add_literals(GrammarBuildingCommon grammar_common) -> void
   }
 
   // String literal
-//  {
-//    b.begin_rule_and_assign(r[RT::RealLiteral], CombinatorRule::Seq, true, "String literal");
-//    (void)b.add_text("\"");
-//    {
-//      (void)b.begin_rule(CombinatorRule::Until);
-//      {
-//        (void)b.begin_rule(CombinatorRule::Not);
-//        (void)b.add_text("\\");
-//        b.end_rule();
-//      }
-//      (void)b.add_text("\"");
-//      b.end_rule();
-//    }
-//    b.end_rule();
-//  }
+  {
+    auto escape_sequence = b.begin_rule(CombinatorRule::Seq);
+    {
+      (void)b.add_text("\\");
+      (void)b.add_rule_ref(BuiltinRule::Any);
+      b.end_rule();
+    }
+
+    auto string_literal_content = b.begin_rule(CombinatorRule::Sor);
+    {
+      b.add_rule_ref(escape_sequence);
+      {
+        (void)b.begin_rule(CombinatorRule::Seq);
+        {
+          (void)b.begin_rule(CombinatorRule::OneIfNotAt);
+          {
+            (void)b.begin_rule(CombinatorRule::Sor);
+            (void)b.add_text("\n");
+            (void)b.add_text("\"");
+            b.end_rule();
+          }
+          b.end_rule();
+        }
+        b.end_rule();
+      }
+      b.end_rule(); // string_literal_content
+    }
+
+    b.begin_rule_and_assign(r[RT::StringLiteral], CombinatorRule::Seq, true, "String literal");
+    (void)b.add_text("\"");
+    {
+      (void)b.begin_rule(CombinatorRule::Star, false, "String literal content");
+      b.add_rule_ref(string_literal_content);
+      b.end_rule();
+    }
+    (void)b.add_text("\"");
+    b.end_rule();
+  }
 }
 
 static auto add_blocks(GrammarBuildingCommon grammar_common) -> void
@@ -194,7 +217,7 @@ static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
     {
       b.add_rule_ref(r[RT::Name]);
       b.add_rule_ref(r[RT::CodeBlock]);
-//      b.add_rule_ref(r[RT::StringLiteral]);
+      b.add_rule_ref(r[RT::StringLiteral]);
       b.add_rule_ref(r[RT::IntegerLiteral]);
       b.add_rule_ref(r[RT::RealLiteral]);
       b.add_rule_ref(r[RT::ExprInParen]);

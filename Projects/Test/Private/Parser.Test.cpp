@@ -79,5 +79,3 @@ TEST(Parse_Expressions, compound_expression)
 {
   test_module_parse("expressions/CompoundExpr.jet");
 }
-
-

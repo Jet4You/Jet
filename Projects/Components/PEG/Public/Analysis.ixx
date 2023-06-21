@@ -148,6 +148,13 @@ struct AnalysisState
   {
     return content.substr(this->current_pos());
   }
+
+  /// Returns @c true if the current position is at the end of the input.
+  [[nodiscard]]
+  auto at_end() const -> bool
+  {
+    return current_pos() == content.length();
+  }
 };
 
 struct ASTAnalysis

@@ -41,6 +41,7 @@ static auto try_match_combinator_seq(MatcherContext ctx, StructuralView rule) ->
 static auto try_match_combinator_plus(MatcherContext ctx, StructuralView rule) -> RuleMatchResult;
 static auto try_match_combinator_star(MatcherContext ctx, StructuralView rule) -> RuleMatchResult;
 static auto try_match_combinator_opt(MatcherContext ctx, StructuralView rule) -> RuleMatchResult;
+static auto try_match_combinator_one_if_not_at(MatcherContext ctx, StructuralView rule) -> RuleMatchResult;
 
 
 auto ASTBuilder::begin_entry(CustomRuleRef rule_id, usize start_pos) -> EntryID
@@ -162,6 +163,7 @@ static auto try_match_combinator_rule(MatcherContext ctx, StructuralView rule) -
   case CR::Plus: return try_match_combinator_plus(ctx, rule);
   case CR::Star: return try_match_combinator_star(ctx, rule);
   case CR::Opt: return try_match_combinator_opt(ctx, rule);
+  case CR::OneIfNotAt: return try_match_combinator_one_if_not_at(ctx, rule);
   }
 
   return {false};
@@ -203,6 +205,7 @@ static auto try_match_builtin_rule(MatcherContext ctx, RuleRegistryView rule) ->
   {
     switch (rule) {
     case BuiltinRule::Whitespace: return consume_char_if(std::isspace, c);
+    case BuiltinRule::Any: return 1; // always consume 1
     case BuiltinRule::Alnum: return consume_char_if(std::isalnum, c);
     case BuiltinRule::Alpha: return consume_char_if(std::isalpha, c);
     case BuiltinRule::Digit: return consume_char_if(std::isdigit, c);
@@ -333,6 +336,29 @@ static auto try_match_combinator_seq(MatcherContext ctx, StructuralView rule) ->
   }
 
   // Every subrule succeeded.
+  return {true};
+}
+
+static auto try_match_combinator_one_if_not_at(MatcherContext ctx, StructuralView rule) -> RuleMatchResult
+{
+  if (ctx.state.at_end()) {
+    return {false};
+  }
+
+  auto restore_point = ctx.state.create_restore_point();
+
+  // Try match inner sequence
+  auto result = try_match_combinator_seq(ctx, rule);
+
+  // Restore anyway
+  ctx.state.restore(restore_point);
+
+  // If it succeeded, fail.
+  if (result.success) {
+    return {false};
+  }
+
+  ctx.state.consume(1);
   return {true};
 }
 

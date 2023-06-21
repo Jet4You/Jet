@@ -16,6 +16,7 @@ auto to_string(CombinatorRule rule) -> StringView
   case R::Opt: return "Opt";
   case R::Star: return "Star";
   case R::Plus: return "Plus";
+  case R::OneIfNotAt: return "OneIfNotAt";
   }
   return "<Unknown>";
 }
