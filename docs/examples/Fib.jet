@@ -7,7 +7,7 @@ fn main {
     ret;
   }
   
-  print_fib();
+  print_fib(maybe_num.ok());
 }
 
 fn print_fib(up_to: u32) {
