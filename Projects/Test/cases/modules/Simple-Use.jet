@@ -1,0 +1,5 @@
+use std::fs::write_file;
+
+fn main {
+
+}

@@ -1,0 +1,6 @@
+use foo::bar as baz;
+use foo::{qux as alpha, quux as beta};
+
+fn main {
+
+}

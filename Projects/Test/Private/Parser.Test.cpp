@@ -85,22 +85,44 @@ TEST(Parse_Types, Vector2_struct_succeeds)
 
 // "expressions" subfolder
 
-TEST(Parse_Expressions, add_numbers)
+TEST(Parse_Expressions, add_numbers_succeeds)
 {
   test_module_parse("expressions/AddNumbers.jet");
 }
 
-TEST(Parse_Expressions, add_variables)
+TEST(Parse_Expressions, add_variables_succeeds)
 {
   test_module_parse("expressions/AddVariables.jet");
 }
 
-TEST(Parse_Expressions, compound_math_expression)
+TEST(Parse_Expressions, compound_math_expression_succeeds)
 {
   test_module_parse("expressions/CompoundMathExpr.jet");
 }
 
-TEST(Parse_Expressions, compound_expression)
+TEST(Parse_Expressions, compound_expression_succeeds)
 {
   test_module_parse("expressions/CompoundExpr.jet");
+}
+
+// "modules" subfolder
+
+TEST(Parse_Modules, simple_use_succeeds)
+{
+  test_module_parse("modules/Simple-Use.jet");
+}
+
+TEST(Parse_Modules, combined_use_succeeds)
+{
+  test_module_parse("modules/Combined-Use.jet");
+}
+
+TEST(Parse_Modules, multiple_combined_use_succeeds)
+{
+  test_module_parse("modules/Multiple-Combined-Use.jet");
+}
+
+TEST(Parse_Modules, use_aliases_succeeds)
+{
+  test_module_parse("modules/Use-Aliases.jet");
 }

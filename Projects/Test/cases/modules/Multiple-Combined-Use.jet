@@ -1,0 +1,11 @@
+use foo::{
+    bar::{qux, qux2::*},
+    baz::*
+  }
+  , abc::def::{alpha, beta};
+
+use gamma::delta;
+
+fn main {
+
+}
