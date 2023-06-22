@@ -377,6 +377,8 @@ static auto try_match_combinator_repeat(MatcherContext ctx, StructuralView rule,
   while (num_matches < max_num || max_num == 0) {
     auto child = rule.first_child();
 
+    auto inner_restore_point = ctx.state.create_restore_point();
+
     auto matched_all = true;
     for (auto c = usize(0); c < rule.num_children(); ++c) {
       auto match_result = try_match_rule(ctx, child);
@@ -388,6 +390,7 @@ static auto try_match_combinator_repeat(MatcherContext ctx, StructuralView rule,
     }
 
     if (!matched_all) {
+      ctx.state.restore(inner_restore_point);
       break;
     }
 
