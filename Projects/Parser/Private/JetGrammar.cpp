@@ -193,6 +193,12 @@ static auto add_keywords(GrammarBuildingCommon grammar_common) -> void
   using RT     = JetGrammarRuleType;
   auto& [r, b] = grammar_common;
 
+  // Module-related
+  r[RT::KwUse] = b.add_text("use");
+
+  // General
+  r[RT::KwAs] = b.add_text("as");
+
   // Variable-related
   r[RT::KwVar] = b.add_text("var");
   r[RT::KwLet] = b.add_text("let");
@@ -616,10 +622,161 @@ static auto add_module_level_statements(GrammarBuildingCommon grammar_common) ->
   using RT     = JetGrammarRuleType;
   auto& [r, b] = grammar_common;
 
+  // Use statement
+  //
+  // Examples:
+  //
+  // use std::io::*;
+  // use std::fs::read_file;
+  // use std::fs::{read_file, write_file};
+  // use std::{fs::read_file, fs::write_file};
+  // use foo::{bar::{baz}, qux};
+  {
+    auto const scope_op = b.add_text("::");
+
+    // # Scoped name sequence
+    // name(::name)*
+    // Note spaces are allowed between :: and names.
+    //
+    // Examples:
+    //
+    // foo
+    // foo::bar
+    // foo::bar::baz
+    // foo :: bar :: baz
+    auto scoped_name_seq = b.begin_rule(CombinatorRule::Seq);
+    {
+      b.add_rule_ref(r[RT::Name]);
+
+      // (::name)*
+      {
+        (void)b.begin_rule(CombinatorRule::Star);
+        b.add_rule_ref(r[RT::OptWs]);
+        b.add_rule_ref(scope_op);
+        b.add_rule_ref(r[RT::OptWs]);
+        b.add_rule_ref(r[RT::Name]);
+        b.end_rule();
+      }
+
+      b.end_rule(); // scoped_name_seq
+    }
+
+    // Use identifier sequence list:
+    //
+    // use-identifier-seq(,use-identifier-seq)*,?
+    //
+    // Examples:
+    //
+    // foo
+    // foo, bar
+    // foo::bar, baz, baz
+    auto use_identifier_seq_list = b.begin_rule(CombinatorRule::Seq);
+    {
+      b.add_rule_ref(r[RT::UseIdentifierSeq]);
+      {
+        (void)b.begin_rule(CombinatorRule::Star);
+        b.add_rule_ref(r[RT::OptWs]);
+        (void)b.add_text(",");
+        b.add_rule_ref(r[RT::OptWs]);
+        b.add_rule_ref(r[RT::UseIdentifierSeq]);
+        b.end_rule();
+      }
+      {
+        (void)b.begin_rule(CombinatorRule::Opt);
+        b.add_rule_ref(r[RT::OptWs]);
+        (void)b.add_text(",");
+        b.end_rule();
+      }
+      b.end_rule(); // use_identifier_seq_list
+    }
+
+    // Alias sequence for a name in a use statement
+    //
+    // Examples:
+    //
+    // as baz
+    // as bar
+    // as foo
+    auto use_name_alias = b.begin_rule(CombinatorRule::Seq);
+    {
+      b.add_rule_ref(r[RT::Ws]);
+      b.add_rule_ref(r[RT::KwAs]);
+      b.add_rule_ref(r[RT::Ws]);
+      b.add_rule_ref(r[RT::Name]);
+      b.end_rule(); // use_name_alias
+    }
+
+    auto use_group_bracketed_list = b.begin_rule(CombinatorRule::Seq);
+    {
+      (void)b.add_text("{");
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(use_identifier_seq_list);
+      b.add_rule_ref(r[RT::OptWs]);
+      (void)b.add_text("}");
+
+      b.end_rule(); // use_group_bracketed_list
+    }
+
+    // The optional group specifier of the use statement.
+    // The last :: followed by * or a list of names.
+    //
+    // Examples:
+    // ::*
+    // ::{name1, name2::*, name3 as name4}
+    auto use_group_specifier = b.begin_rule(CombinatorRule::Opt);
+    {
+      b.add_rule_ref(scope_op);
+      {
+        (void)b.begin_rule(CombinatorRule::Sor);
+        // All
+        (void)b.add_text("*");
+        // Listed
+        b.add_rule_ref(use_group_bracketed_list);
+        b.end_rule();
+      }
+      b.end_rule(); // use_group_specifier
+    }
+
+    // Use identifier sequence
+    //
+    // Example:
+    //
+    // std::fs::*
+    // std::fs::read_file
+    // std::fs::read_file as other_name
+    // std::fs::{use-identifier-seq-list}
+    {
+      b.begin_rule_and_assign(r[RT::UseIdentifierSeq], CombinatorRule::Seq);
+      b.add_rule_ref(scoped_name_seq);
+      {
+        // Aliased single or partial import
+        (void)b.begin_rule(CombinatorRule::Sor);
+
+        b.add_rule_ref(use_name_alias);
+        b.add_rule_ref(use_group_specifier);
+
+        b.end_rule();
+      }
+      b.end_rule(); // RT::UseIdentifierSeq
+    }
+
+    // Combined
+    {
+      b.begin_rule_and_assign(r[RT::UseStatement], CombinatorRule::Seq, true, "Use statement");
+      b.add_rule_ref(r[RT::KwUse]);
+      b.add_rule_ref(r[RT::Ws]);
+      b.add_rule_ref(use_identifier_seq_list);
+      b.add_rule_ref(r[RT::OptWs]);
+      (void)b.add_text(";");
+      b.end_rule(); // RT::UseStatement
+    }
+  }
+
   {
     b.begin_rule_and_assign(r[RT::ModuleStmt], CombinatorRule::Sor, false);
     b.add_rule_ref(r[RT::DeclFunction]);
-    b.end_rule();
+    b.add_rule_ref(r[RT::UseStatement]);
+    b.end_rule(); // RT::ModuleStmt
   }
 }
 

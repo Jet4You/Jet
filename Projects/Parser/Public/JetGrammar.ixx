@@ -21,6 +21,10 @@ enum class JetGrammarRuleType
   // Root:
   ModuleStmt,
 
+  // Statements
+  UseStatement,
+  UseIdentifierSeq,
+
   // Base pieces
   Ws,    // Whitespace(s) / comments
   OptWs, // Optional `ws`
@@ -47,13 +51,19 @@ enum class JetGrammarRuleType
 
   // Keywords
 
+  // # Module related
+  KwUse, // "use"
+
   // # Variable-related
-  KwVar,
-  KwLet,
+  KwVar, // "var"
+  KwLet, // "let"
 
   // # Function-related
-  KwFn,
-  KwRet,
+  KwFn,  // "fn"
+  KwRet, // "ret"
+
+  // # General
+  KwAs, // "as"
 
   // Identifiers
   Name,
