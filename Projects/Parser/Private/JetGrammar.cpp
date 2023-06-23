@@ -1,4 +1,5 @@
 #include <utility>
+#include <variant>
 
 import Jet.Parser.JetGrammar;
 
@@ -46,17 +47,7 @@ auto build_grammar() -> JetGrammar
 
   add_module_level_statements(common);
 
-  auto root = b.begin_rule(CombinatorRule::Seq, true, "Module level statements");
-  {
-    {
-      (void)b.begin_rule(CombinatorRule::Plus);
-      b.add_rule_ref(r[RT::OptWs]);
-      b.add_rule_ref(r[RT::ModuleStmt]);
-      b.end_rule();
-    }
-    b.add_rule_ref(r[RT::OptWs]);
-    b.end_rule();
-  }
+  auto root = std::get<CustomRuleRef>(r[RT::ModuleLevelStatements]);
 
   auto finalized = finalize_grammar(root, std::move(b), std::move(r));
   return JetGrammar(std::move(finalized.capture_list), std::move(finalized.grammar));
@@ -194,6 +185,7 @@ static auto add_keywords(GrammarBuildingCommon grammar_common) -> void
   auto& [r, b] = grammar_common;
 
   // Module-related
+  r[RT::KwMod] = b.add_text("mod");
   r[RT::KwUse] = b.add_text("use");
 
   // General
@@ -305,6 +297,7 @@ static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
       (void)b.add_text("/");
       (void)b.add_text("%");
       (void)b.add_text(".");
+      (void)b.add_text("::"); // scope-resolution
     }
     b.end_rule();
   }
@@ -443,6 +436,7 @@ static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
     b.begin_rule_and_assign(r[RT::Statement], CombinatorRule::Sor, true, "Statement");
     b.add_rule_ref(r[RT::DeclVariable]);
     b.add_rule_ref(r[RT::DeclFunction]);
+    b.add_rule_ref(r[RT::UseStatement]);
     b.add_rule_ref(r[RT::ReturnStatement]);
     // Expression statement
     {
@@ -622,6 +616,35 @@ static auto add_module_level_statements(GrammarBuildingCommon grammar_common) ->
   using RT     = JetGrammarRuleType;
   auto& [r, b] = grammar_common;
 
+  auto const scope_op = b.add_text("::");
+
+  // # Scoped name sequence
+  // name(::name)*
+  // Note spaces are allowed between :: and names.
+  //
+  // Examples:
+  //
+  // foo
+  // foo::bar
+  // foo::bar::baz
+  // foo :: bar :: baz
+  auto scoped_name_seq = b.begin_rule(CombinatorRule::Seq);
+  {
+    b.add_rule_ref(r[RT::Name]);
+
+    // (::name)*
+    {
+      (void)b.begin_rule(CombinatorRule::Star);
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(scope_op);
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(r[RT::Name]);
+      b.end_rule();
+    }
+
+    b.end_rule(); // scoped_name_seq
+  }
+
   // Use statement
   //
   // Examples:
@@ -632,34 +655,6 @@ static auto add_module_level_statements(GrammarBuildingCommon grammar_common) ->
   // use std::{fs::read_file, fs::write_file};
   // use foo::{bar::{baz}, qux};
   {
-    auto const scope_op = b.add_text("::");
-
-    // # Scoped name sequence
-    // name(::name)*
-    // Note spaces are allowed between :: and names.
-    //
-    // Examples:
-    //
-    // foo
-    // foo::bar
-    // foo::bar::baz
-    // foo :: bar :: baz
-    auto scoped_name_seq = b.begin_rule(CombinatorRule::Seq);
-    {
-      b.add_rule_ref(r[RT::Name]);
-
-      // (::name)*
-      {
-        (void)b.begin_rule(CombinatorRule::Star);
-        b.add_rule_ref(r[RT::OptWs]);
-        b.add_rule_ref(scope_op);
-        b.add_rule_ref(r[RT::OptWs]);
-        b.add_rule_ref(r[RT::Name]);
-        b.end_rule();
-      }
-
-      b.end_rule(); // scoped_name_seq
-    }
 
     // Use identifier sequence list:
     //
@@ -772,11 +767,54 @@ static auto add_module_level_statements(GrammarBuildingCommon grammar_common) ->
     }
   }
 
+  // Submodule definition
+  // mod scoped-name-seq { module-stmt* }
+  // Example:
+  //
+  // mod foo { }
+  // mod foo::bar { }
   {
-    b.begin_rule_and_assign(r[RT::ModuleStmt], CombinatorRule::Sor, false);
+    b.begin_rule_and_assign(r[RT::SubmoduleDefinition], CombinatorRule::Seq, true, "Submodule definition");
+    b.add_rule_ref(r[RT::KwMod]);
+    b.add_rule_ref(r[RT::Ws]);
+    b.add_rule_ref(scoped_name_seq);
+    b.add_rule_ref(r[RT::OptWs]);
+    (void)b.add_text("{");
+
+    // Submodule maybe empty
+    {
+      (void)b.begin_rule(CombinatorRule::Sor);
+      b.add_rule_ref(r[RT::ModuleLevelStatements]); // non-empty case
+      b.add_rule_ref(r[RT::OptWs]); // empty case
+      b.end_rule();
+    }
+
+    (void)b.add_text("}");
+    b.end_rule(); // RT::SubmoduleDefinition
+  }
+
+  // Single module-level statement
+  {
+    b.begin_rule_and_assign(r[RT::SingleModuleLevelStatement], CombinatorRule::Sor);
     b.add_rule_ref(r[RT::DeclFunction]);
     b.add_rule_ref(r[RT::UseStatement]);
-    b.end_rule(); // RT::ModuleStmt
+    b.add_rule_ref(r[RT::SubmoduleDefinition]);
+    b.end_rule(); // RT::SingleModuleLevelStatement
+  }
+
+  // Module level statements
+  {
+    b.begin_rule_and_assign(r[RT::ModuleLevelStatements], CombinatorRule::Seq, true, "Module level statements");
+
+    {
+      (void)b.begin_rule(CombinatorRule::Plus);
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(r[RT::SingleModuleLevelStatement]);
+      b.end_rule();
+    }
+
+    b.add_rule_ref(r[RT::OptWs]);
+    b.end_rule(); // RT::ModuleLevelStatements
   }
 }
 
