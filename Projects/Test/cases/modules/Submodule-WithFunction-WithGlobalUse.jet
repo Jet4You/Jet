@@ -1,0 +1,13 @@
+mod math {
+
+fn add(a: i32, b: i32): i32 {
+  ret a + b;
+}
+
+}
+
+use math::add;
+
+fn main {
+  println("{}", add(1, 2));
+}

@@ -126,3 +126,33 @@ TEST(Parse_Modules, use_aliases_succeeds)
 {
   test_module_parse("modules/Use-Aliases.jet");
 }
+
+TEST(Parse_Modules, submodule_empty_succeeds)
+{
+  test_module_parse("modules/Submodule-Empty.jet");
+}
+
+TEST(Parse_Modules, submodule_with_function_succeeds)
+{
+  test_module_parse("modules/Submodule-WithFunction.jet");
+}
+
+TEST(Parse_Modules, submodule_with_function_with_local_use_succeeds)
+{
+  test_module_parse("modules/Submodule-WithFunction-WithLocalUse.jet");
+}
+
+TEST(Parse_Modules, submodule_with_function_with_local_alias_succeeds)
+{
+  test_module_parse("modules/Submodule-WithFunction-WithLocalAlias.jet");
+}
+
+TEST(Parse_Modules, submodule_with_function_with_global_use_succeeds)
+{
+  test_module_parse("modules/Submodule-WithFunction-WithGlobalUse.jet");
+}
+
+TEST(Parse_Modules, submodule_with_function_with_global_alias_succeeds)
+{
+  test_module_parse("modules/Submodule-WithFunction-WithGlobalAlias.jet");
+}
