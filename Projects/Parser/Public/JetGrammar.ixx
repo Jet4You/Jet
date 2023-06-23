@@ -19,7 +19,11 @@ auto build_grammar() -> JetGrammar;
 enum class JetGrammarRuleType
 {
   // Root:
-  ModuleStmt,
+  ModuleLevelStatements,
+
+  SingleModuleLevelStatement,
+
+  SubmoduleDefinition,
 
   // Statements
   UseStatement,
@@ -52,6 +56,7 @@ enum class JetGrammarRuleType
   // Keywords
 
   // # Module related
+  KwMod, // "mod"
   KwUse, // "use"
 
   // # Variable-related
