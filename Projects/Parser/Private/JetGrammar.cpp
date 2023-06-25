@@ -7,6 +7,9 @@ import Jet.Comp.PEG.Rule;
 import Jet.Comp.PEG.Grammar;
 import Jet.Comp.PEG.GrammarBuilder;
 
+import Jet.Comp.Foundation.StdTypes;
+using namespace jet::comp::foundation;
+
 namespace jet::parser
 {
 using namespace comp::peg;
@@ -184,24 +187,34 @@ static auto add_keywords(GrammarBuildingCommon grammar_common) -> void
   using RT     = JetGrammarRuleType;
   auto& [r, b] = grammar_common;
 
+  auto add_keyword = [&](StringView content) -> CustomRuleRef {
+    auto rule = b.begin_rule(CombinatorRule::Seq);
+    {
+      (void)b.add_text(content);
+      b.add_rule_ref(BuiltinRule::WordBoundary);
+      b.end_rule();
+    }
+    return rule;
+  };
+
   // Module-related
-  r[RT::KwMod] = b.add_text("mod");
-  r[RT::KwUse] = b.add_text("use");
+  r[RT::KwMod] = add_keyword("mod");
+  r[RT::KwUse] = add_keyword("use");
 
   // General
-  r[RT::KwAs] = b.add_text("as");
+  r[RT::KwAs] = add_keyword("as");
 
   // Variable-related
-  r[RT::KwVar] = b.add_text("var");
-  r[RT::KwLet] = b.add_text("let");
+  r[RT::KwVar] = add_keyword("var");
+  r[RT::KwLet] = add_keyword("let");
 
   // Function-related
-  r[RT::KwFn] = b.add_text("fn");
+  r[RT::KwFn] = add_keyword("fn");
 
   // Control flow
-  r[RT::KwRet]  = b.add_text("ret");
-  r[RT::KwIf]   = b.add_text("if");
-  r[RT::KwElse] = b.add_text("else");
+  r[RT::KwRet]  = add_keyword("ret");
+  r[RT::KwIf]   = add_keyword("if");
+  r[RT::KwElse] = add_keyword("else");
 }
 
 static auto add_identifiers(GrammarBuildingCommon grammar_common) -> void
