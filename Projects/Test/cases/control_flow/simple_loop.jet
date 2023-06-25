@@ -1,0 +1,10 @@
+fn main {
+  let a = 10;
+
+  loop {
+    a--;
+    if (a < 0) {
+      break;
+    }
+  }
+}

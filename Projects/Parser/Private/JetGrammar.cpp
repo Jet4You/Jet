@@ -215,6 +215,13 @@ static auto add_keywords(GrammarBuildingCommon grammar_common) -> void
   r[RT::KwRet]  = add_keyword("ret");
   r[RT::KwIf]   = add_keyword("if");
   r[RT::KwElse] = add_keyword("else");
+
+  r[RT::KwLoop] = add_keyword("loop");
+  r[RT::KwWhile] = add_keyword("while");
+  r[RT::KwFor] = add_keyword("for");
+
+  r[RT::KwBreak] = add_keyword("break");
+  r[RT::KwContinue] = add_keyword("continue");
 }
 
 static auto add_identifiers(GrammarBuildingCommon grammar_common) -> void
@@ -308,11 +315,13 @@ static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
   {
     b.begin_rule_and_assign(r[RT::InfixOperator], CombinatorRule::Sor, false, "InfixOperator");
     {
-      (void)b.add_text("+");
-      (void)b.add_text("-");
-      (void)b.add_text("*");
-      (void)b.add_text("/");
-      (void)b.add_text("%");
+      // !!!NOTE!!!:
+      // The order in this section is very important.
+      // Longer operators must be before shorter ones.
+      // Example: the string "a == b"
+      // If the infix operator `=` will be checked first then it will succeed.
+      // But we want the infix operator `==` to succeed.
+
       (void)b.add_text(".");
       (void)b.add_text("::"); // scope-resolution
 
@@ -320,10 +329,28 @@ static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
       {
         (void)b.add_text("==");
         (void)b.add_text("!=");
-        (void)b.add_text("<");
         (void)b.add_text("<=");
-        (void)b.add_text(">");
         (void)b.add_text(">=");
+        (void)b.add_text("<");
+        (void)b.add_text(">");
+      }
+
+      // Math
+      {
+        (void)b.add_text("+=");
+        (void)b.add_text("-=");
+        (void)b.add_text("*=");
+        (void)b.add_text("/=");
+        (void)b.add_text("%=");
+
+        // assignment
+        (void)b.add_text("=");
+
+        (void)b.add_text("+");
+        (void)b.add_text("-");
+        (void)b.add_text("*");
+        (void)b.add_text("/");
+        (void)b.add_text("%");
       }
     }
     b.end_rule();
@@ -466,6 +493,9 @@ static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
     b.add_rule_ref(r[RT::UseStatement]);
     b.add_rule_ref(r[RT::ReturnStatement]);
     b.add_rule_ref(r[RT::IfStatement]);
+    b.add_rule_ref(r[RT::LoopStatement]);
+    b.add_rule_ref(r[RT::WhileLoopStatement]);
+    b.add_rule_ref(r[RT::ForLoopStatement]);
     // Note: CodeBlock is also an expression, but at this point we explicitly allow no `;` after it
     b.add_rule_ref(r[RT::CodeBlock]);
     // Expression statement
@@ -640,39 +670,78 @@ static auto add_control_flow(GrammarBuildingCommon grammar_common) -> void
     b.end_rule();
   }
 
-  // if-else
+  // else statement
   {
-    auto const body_statement = b.begin_rule(CombinatorRule::Seq);
+    b.begin_rule_and_assign(r[RT::ElseStatement], CombinatorRule::Seq, true, "Else statement");
+    b.add_rule_ref(r[RT::KwElse]);
+    b.add_rule_ref(r[RT::OptWs]);
+    b.add_rule_ref(r[RT::Statement]);
+    b.end_rule(); // RT::ElseStatement
+  }
+
+  // if statement
+  {
+    b.begin_rule_and_assign(r[RT::IfStatement], CombinatorRule::Seq, true, "If statement");
+    b.add_rule_ref(r[RT::KwIf]);
+    b.add_rule_ref(r[RT::OptWs]);
+    b.add_rule_ref(r[RT::ExprInParen]);
+    b.add_rule_ref(r[RT::OptWs]);
+    b.add_rule_ref(r[RT::Statement]);
     {
+      (void)b.begin_rule(CombinatorRule::Opt);
       b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(r[RT::ElseStatement]);
+      b.end_rule();
+    }
+    b.end_rule(); // RT::IfStatement
+  }
+
+  // loop statement
+  {
+    b.begin_rule_and_assign(r[RT::LoopStatement], CombinatorRule::Seq, true, "Loop statement");
+    b.add_rule_ref(r[RT::KwLoop]);
+    b.add_rule_ref(r[RT::OptWs]);
+    b.add_rule_ref(r[RT::Statement]);
+    b.end_rule(); // RT::LoopStatement
+  }
+
+  // while statement
+  {
+    b.begin_rule_and_assign(r[RT::WhileLoopStatement], CombinatorRule::Seq, true, "While statement");
+    b.add_rule_ref(r[RT::KwWhile]);
+    b.add_rule_ref(r[RT::OptWs]);
+    b.add_rule_ref(r[RT::ExprInParen]);
+    b.add_rule_ref(r[RT::OptWs]);
+    b.add_rule_ref(r[RT::Statement]);
+    b.end_rule(); // RT::WhileStatement
+  }
+
+  // for statement
+  {
+    auto for_loop_preamble_inner = b.begin_rule(CombinatorRule::Seq);
+    {
       b.add_rule_ref(r[RT::Statement]);
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(r[RT::Expression]);
+      b.add_rule_ref(r[RT::OptWs]);
+      (void)b.add_text(";");
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(r[RT::Expression]);
       b.end_rule();
     }
 
-    // else statement
     {
-      b.begin_rule_and_assign(r[RT::ElseStatement], CombinatorRule::Seq, true, "Else statement");
-      b.add_rule_ref(r[RT::KwElse]);
+      b.begin_rule_and_assign(r[RT::ForLoopStatement], CombinatorRule::Seq, true, "For statement");
+      b.add_rule_ref(r[RT::KwFor]);
+      b.add_rule_ref(r[RT::OptWs]);
+      (void)b.add_text("(");
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(for_loop_preamble_inner);
+      b.add_rule_ref(r[RT::OptWs]);
+      (void)b.add_text(")");
       b.add_rule_ref(r[RT::OptWs]);
       b.add_rule_ref(r[RT::Statement]);
-      b.end_rule(); // RT::ElseStatement
-    }
-
-    // if statement
-    {
-      b.begin_rule_and_assign(r[RT::IfStatement], CombinatorRule::Seq, true, "If statement");
-      b.add_rule_ref(r[RT::KwIf]);
-      b.add_rule_ref(r[RT::OptWs]);
-      b.add_rule_ref(r[RT::ExprInParen]);
-      b.add_rule_ref(r[RT::OptWs]);
-      b.add_rule_ref(r[RT::Statement]);
-      {
-        (void)b.begin_rule(CombinatorRule::Opt);
-        b.add_rule_ref(r[RT::OptWs]);
-        b.add_rule_ref(r[RT::ElseStatement]);
-        b.end_rule();
-      }
-      b.end_rule(); // RT::IfStatement
+      b.end_rule(); // RT::ForStatement
     }
   }
 

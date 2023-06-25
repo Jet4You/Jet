@@ -70,6 +70,11 @@ enum class JetGrammarRuleType
   KwRet, // "ret"
   KwIf, // "if"
   KwElse, // "else"
+  KwLoop, // "loop"
+  KwWhile, // "while"
+  KwFor, // "for"
+  KwBreak, // "break"
+  KwContinue, // "continue"
 
   // # General
   KwAs, // "as"
@@ -98,6 +103,9 @@ enum class JetGrammarRuleType
   ReturnStatement,
   IfStatement,
   ElseStatement,
+  LoopStatement,
+  WhileLoopStatement,
+  ForLoopStatement,
 
   MAX
 };
