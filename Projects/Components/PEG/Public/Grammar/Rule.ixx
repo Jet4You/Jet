@@ -84,6 +84,11 @@ enum class BuiltinRule : i32
   /// Word character [a-z], [A-Z], _
   IdentFirstChar,
 
+  /// Pass if at word boundary
+  /// - previous character is not IdentChar, next character is IdentChar)
+  /// - previous character is IdentChar, next character is not IdentChar)
+  WordBoundary,
+
   ///////////// GROUPS
 
   /// IdentFirstChar, then any number of IdentChar

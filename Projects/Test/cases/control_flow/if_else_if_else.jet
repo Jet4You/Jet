@@ -1,0 +1,12 @@
+fn main {
+  let a = 10;
+  if (a < 0) {
+    println("a is negative");
+  }
+  else if (a == 0) {
+    println("a is zero");
+  }
+  else {
+    println("a is positive");
+  }
+}

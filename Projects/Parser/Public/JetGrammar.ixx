@@ -65,7 +65,16 @@ enum class JetGrammarRuleType
 
   // # Function-related
   KwFn,  // "fn"
+
+  // # Control flow
   KwRet, // "ret"
+  KwIf, // "if"
+  KwElse, // "else"
+  KwLoop, // "loop"
+  KwWhile, // "while"
+  KwFor, // "for"
+  KwBreak, // "break"
+  KwContinue, // "continue"
 
   // # General
   KwAs, // "as"
@@ -92,6 +101,11 @@ enum class JetGrammarRuleType
 
   // Control flow
   ReturnStatement,
+  IfStatement,
+  ElseStatement,
+  LoopStatement,
+  WhileLoopStatement,
+  ForLoopStatement,
 
   MAX
 };

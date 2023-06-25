@@ -66,6 +66,38 @@ TEST(Parse_Variables, single_variable_f32_succeeds)
   test_module_parse("variables/SingleVariable-f32.jet");
 }
 
+// "control_flow" subfolder
+
+TEST(Parse_ControlFlow, single_if_succeeds)
+{
+  test_module_parse("control_flow/single_if.jet");
+}
+
+TEST(Parse_ControlFlow, if_else_succeeds)
+{
+  test_module_parse("control_flow/if_else.jet");
+}
+
+TEST(Parse_ControlFlow, if_else_if_else_succeeds)
+{
+  test_module_parse("control_flow/if_else_if_else.jet");
+}
+
+TEST(Parse_ControlFlow, simple_loop_succeeds)
+{
+  test_module_parse("control_flow/simple_loop.jet");
+}
+
+TEST(Parse_ControlFlow, while_loop_succeeds)
+{
+  test_module_parse("control_flow/while_loop.jet");
+}
+
+TEST(Parse_ControlFlow, for_loop_succeeds)
+{
+  test_module_parse("control_flow/for_loop.jet");
+}
+
 // "types" subfolder
 
 TEST(Parse_Types, empty_struct_succeeds)
@@ -103,6 +135,11 @@ TEST(Parse_Expressions, compound_math_expression_succeeds)
 TEST(Parse_Expressions, compound_expression_succeeds)
 {
   test_module_parse("expressions/CompoundExpr.jet");
+}
+
+TEST(Parse_Expressions, multiple_expressions_succeeds)
+{
+  test_module_parse("expressions/MultipleExpressions.jet");
 }
 
 // "modules" subfolder

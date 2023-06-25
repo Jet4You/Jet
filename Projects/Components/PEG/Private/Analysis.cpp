@@ -1,6 +1,7 @@
 #include <utility>
 #include <cctype>
 #include <optional>
+#include <cassert>
 
 import Jet.Comp.PEG.Analysis;
 import Jet.Comp.PEG.Rule;
@@ -192,12 +193,15 @@ static auto try_match_structural_rule(MatcherContext ctx, StructuralView rule) -
 
 static auto try_match_builtin_rule(MatcherContext ctx, RuleRegistryView rule) -> RuleMatchResult
 {
+  auto entire_str  = ctx.state.content;
   auto current_str = ctx.state.current_str();
-  if (current_str.empty()) {
-    return {false};
-  }
 
   auto kind = rule.as_rule().as_builtin();
+
+  if (current_str.empty()) {
+    // Succeed only if the rule tests a WordBoundary:
+    return {kind == BuiltinRule::WordBoundary};
+  }
 
   auto consume_char_if = [](auto func, char c) -> usize { return func(c) ? 1 : 0; };
 
@@ -215,12 +219,30 @@ static auto try_match_builtin_rule(MatcherContext ctx, RuleRegistryView rule) ->
     }
   };
 
-  auto try_consume = [&]() -> usize
+  struct ConsumeResult
+  {
+    usize       count;
+    bool        success;
+    static auto count_based(usize count) -> ConsumeResult
+    {
+      return {count, count != 0};
+    }
+    static auto fail() -> ConsumeResult
+    {
+      return {0, false};
+    }
+    static auto succeed(usize count = 1) -> ConsumeResult
+    {
+      return {count, true};
+    }
+  };
+
+  auto try_consume = [&]() -> ConsumeResult
   {
     auto single_char = try_test_character(kind, current_str[0]);
 
     if (single_char) {
-      return single_char.value() ? 1 : 0;
+      return ConsumeResult::count_based(single_char.value() ? 1 : 0);
     }
 
     switch (kind) {
@@ -228,8 +250,9 @@ static auto try_match_builtin_rule(MatcherContext ctx, RuleRegistryView rule) ->
       auto test = try_test_character(BuiltinRule::IdentFirstChar, current_str[0]);
 
       if (!test.value()) {
-        return 0;
+        return ConsumeResult::fail();
       }
+
       auto consumed = usize(1);
       auto rest     = current_str.substr(consumed);
       for (auto c : rest) {
@@ -240,7 +263,7 @@ static auto try_match_builtin_rule(MatcherContext ctx, RuleRegistryView rule) ->
         consumed += 1;
       }
 
-      return consumed;
+      return ConsumeResult::count_based(consumed);
     }
     case BuiltinRule::UntilEOL: {
       auto consumed = usize(0);
@@ -251,21 +274,42 @@ static auto try_match_builtin_rule(MatcherContext ctx, RuleRegistryView rule) ->
         }
       }
 
-      return consumed;
+      return ConsumeResult::succeed(consumed);
     }
     case BuiltinRule::UntilEOF: {
-      return current_str.size();
+      return ConsumeResult::succeed(current_str.size());
     }
-    default: return false;
+    case BuiltinRule::WordBoundary: {
+      if (ctx.state.current_pos() == 0) {
+        return ConsumeResult::succeed(0);
+      }
+
+      // TODO: make UTF8 aware
+      auto prev_pos  = ctx.state.current_pos() - 1;
+      auto was_ident = try_test_character(BuiltinRule::IdentChar, entire_str[prev_pos]);
+      // we checked if there is another character at the beginning of the outer function
+      auto is_ident = try_test_character(BuiltinRule::IdentChar, current_str.front());
+
+      assert(was_ident.has_value() && is_ident.has_value() && "IdentChar rule should be handled by `try_test_character`");
+
+      if (was_ident.value() != is_ident.value()) {
+        return ConsumeResult::succeed(0);
+      }
+
+      return ConsumeResult::fail();
+    }
+    default: return ConsumeResult::fail();
     }
   };
 
-  auto to_consume = try_consume();
-  if (to_consume == 0) {
+  auto consume_result = try_consume();
+  if (!consume_result.success) {
     return {false};
   }
 
-  ctx.state.consume(to_consume);
+  if (consume_result.count != 0) {
+    ctx.state.consume(consume_result.count);
+  }
   return {true};
 }
 
