@@ -66,6 +66,23 @@ TEST(Parse_Variables, single_variable_f32_succeeds)
   test_module_parse("variables/SingleVariable-f32.jet");
 }
 
+// "control_flow" subfolder
+
+TEST(Parse_ControlFlow, single_if_succeeds)
+{
+  test_module_parse("control_flow/single_if.jet");
+}
+
+TEST(Parse_ControlFlow, if_else_succeeds)
+{
+  test_module_parse("control_flow/if_else.jet");
+}
+
+TEST(Parse_ControlFlow, if_else_if_else_succeeds)
+{
+  test_module_parse("control_flow/if_else_if_else.jet");
+}
+
 // "types" subfolder
 
 TEST(Parse_Types, empty_struct_succeeds)

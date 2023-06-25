@@ -196,8 +196,12 @@ static auto add_keywords(GrammarBuildingCommon grammar_common) -> void
   r[RT::KwLet] = b.add_text("let");
 
   // Function-related
-  r[RT::KwFn]  = b.add_text("fn");
-  r[RT::KwRet] = b.add_text("ret");
+  r[RT::KwFn] = b.add_text("fn");
+
+  // Control flow
+  r[RT::KwRet]  = b.add_text("ret");
+  r[RT::KwIf]   = b.add_text("if");
+  r[RT::KwElse] = b.add_text("else");
 }
 
 static auto add_identifiers(GrammarBuildingCommon grammar_common) -> void
@@ -298,6 +302,16 @@ static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
       (void)b.add_text("%");
       (void)b.add_text(".");
       (void)b.add_text("::"); // scope-resolution
+
+      // Relational
+      {
+        (void)b.add_text("==");
+        (void)b.add_text("!=");
+        (void)b.add_text("<");
+        (void)b.add_text("<=");
+        (void)b.add_text(">");
+        (void)b.add_text(">=");
+      }
     }
     b.end_rule();
   }
@@ -438,6 +452,9 @@ static auto add_expressions(GrammarBuildingCommon grammar_common) -> void
     b.add_rule_ref(r[RT::DeclFunction]);
     b.add_rule_ref(r[RT::UseStatement]);
     b.add_rule_ref(r[RT::ReturnStatement]);
+    b.add_rule_ref(r[RT::IfStatement]);
+    // Note: CodeBlock is also an expression, but at this point we explicitly allow no `;` after it
+    b.add_rule_ref(r[RT::CodeBlock]);
     // Expression statement
     {
       (void)b.begin_rule(CombinatorRule::Seq);
@@ -609,6 +626,43 @@ static auto add_control_flow(GrammarBuildingCommon grammar_common) -> void
     (void)b.add_text(";");
     b.end_rule();
   }
+
+  // if-else
+  {
+    auto const body_statement = b.begin_rule(CombinatorRule::Seq);
+    {
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(r[RT::Statement]);
+      b.end_rule();
+    }
+
+    // else statement
+    {
+      b.begin_rule_and_assign(r[RT::ElseStatement], CombinatorRule::Seq, true, "Else statement");
+      b.add_rule_ref(r[RT::KwElse]);
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(r[RT::Statement]);
+      b.end_rule(); // RT::ElseStatement
+    }
+
+    // if statement
+    {
+      b.begin_rule_and_assign(r[RT::IfStatement], CombinatorRule::Seq, true, "If statement");
+      b.add_rule_ref(r[RT::KwIf]);
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(r[RT::ExprInParen]);
+      b.add_rule_ref(r[RT::OptWs]);
+      b.add_rule_ref(r[RT::Statement]);
+      {
+        (void)b.begin_rule(CombinatorRule::Opt);
+        b.add_rule_ref(r[RT::OptWs]);
+        b.add_rule_ref(r[RT::ElseStatement]);
+        b.end_rule();
+      }
+      b.end_rule(); // RT::IfStatement
+    }
+  }
+
 }
 
 static auto add_module_level_statements(GrammarBuildingCommon grammar_common) -> void
@@ -785,7 +839,7 @@ static auto add_module_level_statements(GrammarBuildingCommon grammar_common) ->
     {
       (void)b.begin_rule(CombinatorRule::Sor);
       b.add_rule_ref(r[RT::ModuleLevelStatements]); // non-empty case
-      b.add_rule_ref(r[RT::OptWs]); // empty case
+      b.add_rule_ref(r[RT::OptWs]);                 // empty case
       b.end_rule();
     }
 
