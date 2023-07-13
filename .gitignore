@@ -1,7 +1,12 @@
 /build
 /bin
+/out
 
+/.vs
 /.idea
 /.vscode
 
 /testbed
+
+*.pdb
+CMakeSettings.json

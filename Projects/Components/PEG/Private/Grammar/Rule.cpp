@@ -11,6 +11,8 @@ auto to_string(CombinatorRule rule) -> StringView
 {
   using R = CombinatorRule;
   switch (rule) {
+  case R::Must: return "Must";
+  case R::IfMust: return "IfMust";
   case R::Sor: return "Sor";
   case R::Seq: return "Seq";
   case R::Opt: return "Opt";

@@ -1,6 +1,6 @@
+add_subdirectory(Components)
 add_subdirectory(Core)
 add_subdirectory(Parser)
 add_subdirectory(Compiler)
 add_subdirectory(CompilerApp)
-add_subdirectory(Components)
 add_subdirectory(Test)
