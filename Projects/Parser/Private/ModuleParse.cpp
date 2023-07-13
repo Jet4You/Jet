@@ -1,9 +1,8 @@
+module;
+
 #include <algorithm>
 
-import Jet.Parser.ModuleParse;
-
-import Jet.Comp.Foundation;
-using namespace jet::comp::foundation;
+module Jet.Parser.ModuleParse;
 
 namespace jet::parser
 {

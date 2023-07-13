@@ -4,11 +4,6 @@ export import Jet.Comp.Foundation;
 export import Jet.Comp.PEG.Grammar;
 export import Jet.Comp.PEG.Analysis;
 
-// redundant:
-import Jet.Comp.Foundation.StdTypes;
-import Jet.Comp.Foundation.Result;
-// ------
-
 using namespace jet::comp::foundation;
 using namespace jet::comp::peg;
 

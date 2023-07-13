@@ -1,19 +1,14 @@
+module;
+
 #include <iostream>
 #include <string_view>
 
-import Jet.Parser;
+module Jet.Parser;
+
 import Jet.Parser.JetGrammar;
-import Jet.Parser.ModuleParse;
-
+import Jet.Comp.PEG;
 import Jet.Comp.Format;
-import Jet.Comp.Foundation;
 
-// redundant:
-import Jet.Comp.Foundation.StdTypes;
-import Jet.Comp.Foundation.Result;
-// ------
-
-using namespace jet::comp::foundation;
 using namespace jet::comp::peg;
 
 namespace jet::parser

@@ -1,10 +1,10 @@
+module;
+
 #include <optional>
 #include <string_view>
 #include <cassert>
 
-import Jet.Comp.Foundation.ProgramArgs;
-
-import Jet.Comp.Foundation.StdTypes;
+module Jet.Comp.Foundation.ProgramArgs;
 
 namespace jet::comp::foundation
 {

@@ -1,17 +1,10 @@
+module;
+
 #include <utility>
 #include <cassert>
 #include <variant>
 
-import Jet.Comp.PEG.GrammarBuilder;
-
-// redundant:
-import Jet.Comp.Foundation;
-import Jet.Comp.Foundation.StdTypes;
-import Jet.Comp.Foundation.Result;
-import Jet.Comp.PEG.Rule;
-// ------
-
-using namespace jet::comp::foundation;
+module Jet.Comp.PEG.GrammarBuilder;
 
 namespace jet::comp::peg
 {

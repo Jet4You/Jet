@@ -1,11 +1,9 @@
+module;
+
 #include <cassert>
 #include <utility>
 
-import Jet.Comp.PEG.Grammar;
-import Jet.Comp.Foundation;
-import Jet.Comp.Foundation.StdTypes;
-
-using namespace jet::comp::foundation;
+module Jet.Comp.PEG.Grammar;
 
 namespace jet::comp::peg
 {

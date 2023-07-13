@@ -7,13 +7,6 @@ export module Jet.Comp.PEG.GrammarBuilder;
 
 export import Jet.Comp.PEG.Grammar;
 
-// redundant
-import Jet.Comp.PEG.Rule;
-
-import Jet.Comp.Foundation.StdTypes;
-import Jet.Comp.Foundation.Result;
-// ------
-
 using namespace jet::comp::foundation;
 
 export namespace jet::comp::peg

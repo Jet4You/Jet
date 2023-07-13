@@ -1,20 +1,13 @@
+module;
+
 #include <utility>
 #include <cctype>
 #include <optional>
 #include <cassert>
 
-import Jet.Comp.PEG.Analysis;
+module Jet.Comp.PEG.Analysis;
+
 import Jet.Comp.PEG.Rule;
-
-import Jet.Comp.Foundation;
-// redundant:
-import Jet.Comp.PEG.Grammar;
-
-import Jet.Comp.Foundation.StdTypes;
-import Jet.Comp.Foundation.Result;
-// ------
-
-using namespace jet::comp::foundation;
 
 namespace jet::comp::peg
 {

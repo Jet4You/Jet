@@ -1,4 +1,4 @@
-import Jet.Compiler.BuildState;
+module Jet.Compiler.BuildState;
 
 namespace jet::compiler
 {
