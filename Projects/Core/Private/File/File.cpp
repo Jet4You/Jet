@@ -1,8 +1,9 @@
+module;
+
 #include <fstream>
 #include <optional>
 
-import Jet.Core.File;
-using namespace jet::comp::foundation;
+module Jet.Core.File;
 
 namespace jet::core
 {

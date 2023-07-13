@@ -1,17 +1,17 @@
+module;
+
 #include <iostream>
 #include <variant>
 #include <cassert>
 
-import Jet.Compiler.BuildProcess;
+module Jet.Compiler.BuildProcess;
+
 import Jet.Compiler.Compile;
 import Jet.Parser;
 import Jet.Core.Module;
 import Jet.Core.File;
 
-import Jet.Comp.Foundation;
 import Jet.Comp.Format;
-
-using namespace jet::comp::foundation;
 
 namespace jet::compiler
 {

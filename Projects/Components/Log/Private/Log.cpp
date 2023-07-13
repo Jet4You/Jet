@@ -5,8 +5,6 @@ module;
 
 module Jet.Comp.Log;
 
-using namespace jet::comp::foundation;
-
 namespace jet::comp::log
 {
 

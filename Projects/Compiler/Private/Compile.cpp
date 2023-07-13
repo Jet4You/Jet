@@ -1,19 +1,19 @@
+module;
+
 #include <iostream>
 #include <fstream>
 #include <filesystem>
 #include <cstdlib>
 
-import Jet.Compiler.Compile;
-import Jet.Compiler.Settings;
+module Jet.Compiler.Compile;
+
 import Jet.Core.File;
 
-import Jet.Comp.Foundation;
-using namespace jet::comp::foundation;
+using jet::parser::ModuleParse;
+using LLVMGenError = String;
 
 namespace jet::compiler
 {
-using parser::ModuleParse;
-using LLVMGenError = String;
 
 static auto generate_llvm_ir(ModuleParse const& parse_result, Settings const& settings) -> Result<String, LLVMGenError>;
 static auto ensure_exists(Path const& directory_path) -> void;

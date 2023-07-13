@@ -1,9 +1,9 @@
+module;
+
 #include <filesystem>
 #include <optional>
 
-import Jet.Core.Module;
-
-using namespace jet::comp::foundation;
+module Jet.Core.Module;
 
 namespace jet::core
 {

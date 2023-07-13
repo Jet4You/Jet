@@ -1,14 +1,9 @@
+module;
+
 #include <utility>
 #include <variant>
 
-import Jet.Parser.JetGrammar;
-
-import Jet.Comp.PEG.Rule;
-import Jet.Comp.PEG.Grammar;
-import Jet.Comp.PEG.GrammarBuilder;
-
-import Jet.Comp.Foundation.StdTypes;
-using namespace jet::comp::foundation;
+module Jet.Parser.JetGrammar;
 
 namespace jet::parser
 {

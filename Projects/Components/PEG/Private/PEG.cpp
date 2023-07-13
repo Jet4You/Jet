@@ -1,4 +1,4 @@
-import Jet.Comp.PEG;
+module Jet.Comp.PEG;
 
 namespace jet::comp::peg
 {

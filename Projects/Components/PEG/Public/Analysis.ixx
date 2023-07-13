@@ -7,10 +7,6 @@ export import Jet.Comp.PEG.Grammar;
 export import Jet.Comp.PEG.Rule;
 
 export import Jet.Comp.Foundation;
-// redundant:
-import Jet.Comp.Foundation.StdTypes;
-import Jet.Comp.Foundation.Result;
-// ------
 
 using namespace jet::comp::foundation;
 

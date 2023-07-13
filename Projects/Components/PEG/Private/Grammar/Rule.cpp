@@ -1,8 +1,4 @@
-import Jet.Comp.PEG.Rule;
-
-import Jet.Comp.Foundation;
-import Jet.Comp.Foundation.StdTypes;
-using namespace jet::comp::foundation;
+module Jet.Comp.PEG.Rule;
 
 namespace jet::comp::peg
 {

@@ -1,11 +1,10 @@
+module;
+
 #ifdef WIN32
 #include <Windows.h>
 #endif
 
-import Jet.Comp.Foundation.UTF8;
-
-import Jet.Comp.Foundation.StdTypes;
-import Jet.Comp.Foundation.Result;
+module Jet.Comp.Foundation.UTF8;
 
 namespace jet::comp::foundation
 {

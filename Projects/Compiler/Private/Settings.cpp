@@ -1,10 +1,10 @@
+module;
+
 #include <iostream>
 #include <optional>
 #include <cassert>
 
-import Jet.Compiler.Settings;
-import Jet.Comp.Foundation;
-using namespace jet::comp::foundation;
+module Jet.Compiler.Settings;
 
 namespace jet::compiler
 {
