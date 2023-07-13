@@ -6,6 +6,7 @@ module;
 #include <optional>
 #include <array>
 #include <vector>
+#include <memory>
 #include <string_view>
 #include <string>
 #include <filesystem>
@@ -50,6 +51,12 @@ using DynArray = std::vector<T, TAlloc>;
 using StringView = std::string_view;
 using String     = std::string;
 using Path       = std::filesystem::path;
+
+template <typename T>
+using Box = std::unique_ptr<T>;
+
+template <typename T>
+using Arc = std::shared_ptr<T>;
 
 }
 

@@ -517,7 +517,7 @@ static auto add_declarations(GrammarBuildingCommon grammar_common) -> void
 
   // Variable definition
   {
-    b.begin_rule_and_assign(r[RT::DeclVariable], CombinatorRule::Seq, true, "Variable declaration");
+    b.begin_rule_and_assign(r[RT::DeclVariable], CombinatorRule::IfMust, true, "Variable declaration");
     // `var` or `let` keyword
     {
       (void)b.begin_rule(CombinatorRule::Sor);
@@ -600,7 +600,7 @@ static auto add_declarations(GrammarBuildingCommon grammar_common) -> void
 
     // Function declaration
     {
-      b.begin_rule_and_assign(r[RT::DeclFunction], CombinatorRule::Seq, true, "Function declaration");
+      b.begin_rule_and_assign(r[RT::DeclFunction], CombinatorRule::IfMust, true, "Function declaration");
       b.add_rule_ref(r[RT::KwFn]);
       b.add_rule_ref(r[RT::Ws]);
       b.add_rule_ref(r[RT::Name]);
@@ -672,7 +672,7 @@ static auto add_control_flow(GrammarBuildingCommon grammar_common) -> void
 
   // else statement
   {
-    b.begin_rule_and_assign(r[RT::ElseStatement], CombinatorRule::Seq, true, "Else statement");
+    b.begin_rule_and_assign(r[RT::ElseStatement], CombinatorRule::IfMust, true, "Else statement");
     b.add_rule_ref(r[RT::KwElse]);
     b.add_rule_ref(r[RT::OptWs]);
     b.add_rule_ref(r[RT::Statement]);
@@ -681,7 +681,7 @@ static auto add_control_flow(GrammarBuildingCommon grammar_common) -> void
 
   // if statement
   {
-    b.begin_rule_and_assign(r[RT::IfStatement], CombinatorRule::Seq, true, "If statement");
+    b.begin_rule_and_assign(r[RT::IfStatement], CombinatorRule::IfMust, true, "If statement");
     b.add_rule_ref(r[RT::KwIf]);
     b.add_rule_ref(r[RT::OptWs]);
     b.add_rule_ref(r[RT::ExprInParen]);
@@ -698,7 +698,7 @@ static auto add_control_flow(GrammarBuildingCommon grammar_common) -> void
 
   // loop statement
   {
-    b.begin_rule_and_assign(r[RT::LoopStatement], CombinatorRule::Seq, true, "Loop statement");
+    b.begin_rule_and_assign(r[RT::LoopStatement], CombinatorRule::IfMust, true, "Loop statement");
     b.add_rule_ref(r[RT::KwLoop]);
     b.add_rule_ref(r[RT::OptWs]);
     b.add_rule_ref(r[RT::Statement]);
@@ -707,7 +707,7 @@ static auto add_control_flow(GrammarBuildingCommon grammar_common) -> void
 
   // while statement
   {
-    b.begin_rule_and_assign(r[RT::WhileLoopStatement], CombinatorRule::Seq, true, "While statement");
+    b.begin_rule_and_assign(r[RT::WhileLoopStatement], CombinatorRule::IfMust, true, "While statement");
     b.add_rule_ref(r[RT::KwWhile]);
     b.add_rule_ref(r[RT::OptWs]);
     b.add_rule_ref(r[RT::ExprInParen]);
@@ -731,7 +731,7 @@ static auto add_control_flow(GrammarBuildingCommon grammar_common) -> void
     }
 
     {
-      b.begin_rule_and_assign(r[RT::ForLoopStatement], CombinatorRule::Seq, true, "For statement");
+      b.begin_rule_and_assign(r[RT::ForLoopStatement], CombinatorRule::IfMust, true, "For statement");
       b.add_rule_ref(r[RT::KwFor]);
       b.add_rule_ref(r[RT::OptWs]);
       (void)b.add_text("(");
@@ -893,7 +893,7 @@ static auto add_module_level_statements(GrammarBuildingCommon grammar_common) ->
 
     // Combined
     {
-      b.begin_rule_and_assign(r[RT::UseStatement], CombinatorRule::Seq, true, "Use statement");
+      b.begin_rule_and_assign(r[RT::UseStatement], CombinatorRule::IfMust, true, "Use statement");
       b.add_rule_ref(r[RT::KwUse]);
       b.add_rule_ref(r[RT::Ws]);
       b.add_rule_ref(use_identifier_seq_list);
@@ -910,7 +910,7 @@ static auto add_module_level_statements(GrammarBuildingCommon grammar_common) ->
   // mod foo { }
   // mod foo::bar { }
   {
-    b.begin_rule_and_assign(r[RT::SubmoduleDefinition], CombinatorRule::Seq, true, "Submodule definition");
+    b.begin_rule_and_assign(r[RT::SubmoduleDefinition], CombinatorRule::IfMust, true, "Submodule definition");
     b.add_rule_ref(r[RT::KwMod]);
     b.add_rule_ref(r[RT::Ws]);
     b.add_rule_ref(scoped_name_seq);
@@ -940,7 +940,7 @@ static auto add_module_level_statements(GrammarBuildingCommon grammar_common) ->
 
   // Module level statements
   {
-    b.begin_rule_and_assign(r[RT::ModuleLevelStatements], CombinatorRule::Seq, true, "Module level statements");
+    b.begin_rule_and_assign(r[RT::ModuleLevelStatements], CombinatorRule::Must, true, "Module level statements");
 
     {
       (void)b.begin_rule(CombinatorRule::Plus);

@@ -4,6 +4,7 @@
 export module Jet.Comp.PEG.Analysis;
 
 export import Jet.Comp.PEG.Grammar;
+export import Jet.Comp.PEG.Rule;
 
 export import Jet.Comp.Foundation;
 // redundant:
@@ -43,6 +44,10 @@ struct AST
 
     /// The position in the input where the rule ended.
     usize end_pos = 0;
+
+#ifndef NDEBUG
+    StringView rule_name;
+#endif
   };
 
   /// @returns The entry with the given ID.
@@ -72,7 +77,7 @@ struct AST
 struct ASTBuilder
 {
   using EntryID = AST::EntryID;
-  using Entry = AST::Entry;
+  using Entry   = AST::Entry;
 
   AST ast;
 
@@ -90,6 +95,9 @@ struct ASTBuilder
 
   /// This will be removed in the future:
 #ifndef NDEBUG
+  /// Creates a new entry of the given rule at the given position.
+  auto begin_entry(CustomRuleRef rule_id, usize start_pos, StringView rule_name) -> EntryID;
+
   auto push_tested_rule(StringView rule_name) -> void
   {
     test_rule_stack.push_back(rule_name);
@@ -113,6 +121,8 @@ struct AnalysisState
     usize pos            = 0;
     usize num_entries    = 0;
     usize children_depth = 0;
+
+    bool parse_failed = false;
   };
 
   /// The text that is being analyzed.
@@ -121,12 +131,22 @@ struct AnalysisState
   /// Current state of an AST being built.
   ASTBuilder ast_builder;
 
+  /// Failed flag.
+  bool parse_failed = false;
+
+  /// The rule that failed.
+  CustomRuleRef failed_rule;
+
   /// Returns a restore point at the current state.
   [[nodiscard]]
   auto create_restore_point() const -> RestorePoint;
 
   /// Restores the state to the given restore point.
-  auto restore(RestorePoint point) -> void;
+  auto force_restore(RestorePoint const& point) -> void;
+
+  /// Restores the state to the given restore point.
+  /// Does nothing if parse is failed.
+  auto restore(RestorePoint const& point) -> void;
 
   /// Consumes n bytes from the input.
   /// TODO: use UTF-8 aware consumption.
@@ -160,7 +180,7 @@ struct AnalysisState
 struct ASTAnalysis
 {
   StringView document;
-  AST ast;
+  AST        ast;
 };
 
 struct CompletedASTAnalysis : ASTAnalysis
@@ -169,6 +189,7 @@ struct CompletedASTAnalysis : ASTAnalysis
 
 struct FailedASTAnalysis : ASTAnalysis
 {
+  CustomRuleRef failed_rule;
   // TODO: add failure info.
 };
 

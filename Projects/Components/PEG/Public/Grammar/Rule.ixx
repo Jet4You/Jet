@@ -20,6 +20,17 @@ export namespace jet::comp::peg
 /// Combinator rule is essentially a container with custom logic for matching children.
 enum class CombinatorRule : i32
 {
+  /// Fails if any subrule fails.
+  /// Stops parsing and returns an error.
+  /// Should be used at critical grammar points to provide error messages.
+  Must,
+
+  /// Fails if any subrule fails.
+  /// Stops parsing if any subrule fails, except the first one.
+  /// Equivalent to:
+  /// Seq(A, Must(B, C, ...))
+  IfMust,
+
   /// Ordered sequence of subrules.
   /// Fails if any subrule fails.
   Seq,
