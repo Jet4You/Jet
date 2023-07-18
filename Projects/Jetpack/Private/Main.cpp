@@ -1,9 +1,13 @@
 #include <string_view>
 
-import Jet.Comp.Format;
 import Jet.Comp.Foundation.StdTypes;
 import Jet.Comp.Foundation.ProgramArgs;
+
+import Jet.Comp.Format;
+import Jet.Comp.YAML;
+
 using namespace jet::comp::foundation;
+namespace yaml = jet::comp::yaml;
 
 static auto constexpr EXEC_NAME = StringView("jetp");
 static auto constexpr VERSION_NAME = StringView("v0.1.0");

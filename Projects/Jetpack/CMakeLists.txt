@@ -22,6 +22,7 @@ target_link_libraries(${PROJECT_NAME}
   # Third party
   Jet_Comp_Foundation
   Jet_Comp_Format
+  Jet_Comp_YAML
 )
 
 if (MSVC)
