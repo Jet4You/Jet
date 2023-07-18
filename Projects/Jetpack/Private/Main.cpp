@@ -44,7 +44,8 @@ static auto maybe_print_version(ProgramArgs const& args) -> bool
     return false;
   }
 
-  if (args.get_unchecked(1) != "--version") {
+  auto const arg = args.get_unchecked(1);
+  if (arg != "--version" && arg != "version") {
     return false;
   }
 
@@ -61,7 +62,8 @@ static auto maybe_print_help(ProgramArgs const& args) -> bool
     return false;
   }
 
-  if (args.get_unchecked(1) != "--help") {
+  auto const arg = args.get_unchecked(1);
+  if (arg != "--help" && arg != "help") {
     return false;
   }
 
