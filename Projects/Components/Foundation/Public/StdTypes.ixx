@@ -11,6 +11,8 @@ module;
 #include <string>
 #include <filesystem>
 #include <variant>
+#include <map>
+#include <unordered_map>
 
 export module Jet.Comp.Foundation.StdTypes;
 
@@ -57,6 +59,12 @@ using Box = std::unique_ptr<T>;
 
 template <typename T>
 using Arc = std::shared_ptr<T>;
+
+template <typename K, typename V>
+using UMap = std::unordered_map<K, V>;
+
+template <typename K, typename V>
+using Map = std::map<K, V>;
 
 }
 
