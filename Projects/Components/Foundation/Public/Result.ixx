@@ -46,7 +46,6 @@ export namespace jet::comp::foundation
 /// <ul>
 ///   <li>a valid value of type T</li>
 ///   <li>an error value of type E</li>
-///   <li>unset value (check <tt>is_unset()</tt>)</li>
 /// </ul>
 template <typename T, typename E>
 struct Result
@@ -54,21 +53,14 @@ struct Result
   using ValueType = T;
   using ErrorType = E;
 
-  inline static auto constexpr UNSET_INDEX = 0;
-  inline static auto constexpr VALUE_INDEX = 1;
-  inline static auto constexpr ERROR_INDEX = 2;
+  inline static auto constexpr VALUE_INDEX = 0;
+  inline static auto constexpr ERROR_INDEX = 1;
 
 private:
   /// The internal value.
-  std::variant<std::monostate, ValueType, ErrorType> value;
+  std::variant<ValueType, ErrorType> value;
 
 public:
-  /// Constructs an empty result (unset).
-  Result() noexcept
-    : value(std::monostate{})
-  {
-  }
-
   /// Constructs a success result with the specified value.
   template <typename U>
     requires std::constructible_from<T, U&&>
@@ -152,12 +144,7 @@ public:
 
   auto is_err() const noexcept -> bool
   {
-    return !this->is_ok();
-  }
-
-  auto is_unset() const noexcept -> bool
-  {
-    return value.index() == UNSET_INDEX;
+    return value.index() == ERROR_INDEX;
   }
 };
 
