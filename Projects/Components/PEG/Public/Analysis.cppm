@@ -1,6 +1,10 @@
 /// # PEG analysis module
 ///
 /// Provides a set of functions to analyze a text input using a PEG grammar.
+module;
+
+#include <vector>
+
 export module Jet.Comp.PEG.Analysis;
 
 export import Jet.Comp.PEG.Grammar;

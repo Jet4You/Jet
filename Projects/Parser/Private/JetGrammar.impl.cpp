@@ -5,9 +5,9 @@ module;
 
 module Jet.Parser.JetGrammar;
 
+using namespace jet::comp::peg;
 namespace jet::parser
 {
-using namespace comp::peg;
 
 struct GrammarBuildingCommon
 {

@@ -41,8 +41,8 @@ using Opt = std::optional<T>;
 template <typename... Ts>
 using Variant = std::variant<Ts...>;
 
-template <typename T>
-using Span = std::span<T, std::dynamic_extent>;
+template <typename T, std::size_t Extent = std::dynamic_extent>
+using Span = std::span<T, Extent>;
 
 template <typename T, usize N>
 using Array = std::array<T, N>;

@@ -1,3 +1,7 @@
+module;
+
+#include <vector>
+
 export module Jet.Comp.PEG.Grammar;
 
 export import Jet.Comp.PEG.Rule;
@@ -193,7 +197,10 @@ struct RuleRegistry
   [[nodiscard]]
   auto view() const -> RuleRegistryView
   {
-    return RuleRegistryView{Span(data)};
+    return RuleRegistryView{
+      .context = Span<usize const>(data),
+      .current_offset = 0,
+    };
   }
 
   [[nodiscard]]
