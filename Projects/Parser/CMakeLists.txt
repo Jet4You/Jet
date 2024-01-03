@@ -9,10 +9,12 @@ set(CMAKE_CXX_SCAN_FOR_MODULES YES)
 
 file(GLOB_RECURSE PUBLIC_MODULE_SOURCES
   "Public/*.cppm"
+  "Public/*.ixx"
 )
 
 file(GLOB_RECURSE PRIVATE_MODULE_SOURCES
   "Private/*.cppm"
+  "Private/*.ixx"
 )
 
 file(GLOB_RECURSE PRIVATE_SOURCES

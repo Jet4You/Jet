@@ -14,6 +14,7 @@ file(GLOB_RECURSE PRIVATE_SOURCES
 
 file(GLOB_RECURSE PRIVATE_MODULE_SOURCES
   "Private/*.cppm"
+  "Private/*.ixx"
 )
 
 add_executable(${PROJECT_NAME})
