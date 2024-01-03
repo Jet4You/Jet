@@ -1,5 +1,7 @@
 export module Jet.Parser.JetGrammar;
 
+import Jet.Comp.Foundation.StdTypes;
+
 import Jet.Comp.PEG.Grammar;
 import Jet.Comp.PEG.GrammarBuilder;
 import Jet.Comp.PEG.Rule;

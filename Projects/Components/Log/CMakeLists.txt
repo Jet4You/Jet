@@ -9,10 +9,16 @@ set(CMAKE_CXX_SCAN_FOR_MODULES YES)
 
 file(GLOB_RECURSE PUBLIC_MODULE_SOURCES
   "Public/*.cppm"
+  "Public/*.ixx"
 )
 
 file(GLOB_RECURSE PRIVATE_MODULE_SOURCES
   "Private/*.cppm"
+  "Private/*.ixx"
+)
+
+file(GLOB_RECURSE PRIVATE_SOURCES
+  "Private/*.cpp"
 )
 
 add_library(${PROJECT_NAME} STATIC)
@@ -24,6 +30,8 @@ target_sources(${PROJECT_NAME}
   PRIVATE
     FILE_SET cxx_modules_private TYPE CXX_MODULES FILES
     ${PRIVATE_MODULE_SOURCES}
+  PRIVATE
+    ${PRIVATE_SOURCES}
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Jet_Comp_Format Jet_Comp_Foundation)

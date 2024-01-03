@@ -9,6 +9,11 @@ set(CMAKE_CXX_SCAN_FOR_MODULES YES)
 
 file(GLOB_RECURSE PRIVATE_MODULE_SOURCES
   "Private/*.cppm"
+  "Private/*.ixx"
+)
+
+file(GLOB_RECURSE PRIVATE_SOURCES
+  "Private/*.cpp"
 )
 
 add_executable(${PROJECT_NAME})
@@ -16,6 +21,8 @@ target_sources(${PROJECT_NAME}
   PRIVATE
     FILE_SET cxx_modules_private TYPE CXX_MODULES FILES
     ${PRIVATE_MODULE_SOURCES}
+  PRIVATE
+    ${PRIVATE_SOURCES}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "jetc")

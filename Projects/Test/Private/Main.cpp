@@ -1,5 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <vector>
+#include <string_view>
+
 import Jet.Parser;
 import Jet.Parser.JetGrammar;
 

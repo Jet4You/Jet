@@ -3,6 +3,7 @@ module;
 #include <utility>
 #include <cassert>
 #include <variant>
+#include <vector>
 
 module Jet.Comp.PEG.GrammarBuilder;
 

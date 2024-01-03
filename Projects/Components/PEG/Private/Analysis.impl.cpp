@@ -1,5 +1,7 @@
 module;
 
+#include <vector>
+#include <string_view>
 #include <utility>
 #include <cctype>
 #include <optional>
